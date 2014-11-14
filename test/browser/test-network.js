@@ -24,7 +24,7 @@ suite('network', function () {
       .then(function () {
         hoodie.account.signUp(u.user, u.password)
           .fail(done)
-          .done(done);
+          .then(done);
     });
   }
 
