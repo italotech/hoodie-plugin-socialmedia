@@ -15,7 +15,7 @@ hoodie-plugin-socialmedia
   <script src="lib/hoodie-plugin-socialmedia/hoodie.socialmedia.js"></script>
 ```
 
-## API
+## API (Dream Code)
 -  [x] hoodie.socialmedia.follow(login) - wip
 -  [x] hoodie.socialmedia.unfollow(login) - wip
 -  [ ] hoodie.socialmedia.post({text:'text'}, /*opitional*/ {type: [mediaplugin.enum]})
