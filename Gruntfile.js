@@ -259,7 +259,6 @@ module.exports = function (grunt) {
   grunt.registerTask('test:serve', [
     'env:test',
     'shell:removeData',
-    'shell:removeEmails',
     'shell:npmLink',
     'shell:installPlugin',
     'hoodie',

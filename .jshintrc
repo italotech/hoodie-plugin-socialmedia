@@ -1,5 +1,6 @@
 {
   "predef": [
+    "emit",
     "console",
     "describe",
     "it",
@@ -59,4 +60,3 @@
   "nomen": false,
   "white": true
 }
-

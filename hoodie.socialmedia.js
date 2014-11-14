@@ -9,12 +9,8 @@ Hoodie.extend(function (hoodie) {
   'use strict';
 
   hoodie.socialmedia = {
-    follow: function (userId) {
-      var task = {
-        userId: userId,
-        subject: 'post'
-      };
-      return hoodie.task('subscribe').start(task);
+    follow: function (userName) {
+      return hoodie.task('follow').start({ userName: userName })
     },
 
     follows: function () {
