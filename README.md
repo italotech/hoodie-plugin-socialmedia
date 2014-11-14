@@ -16,14 +16,14 @@ hoodie-plugin-socialmedia
 ```
 
 ## API
-[x] hoodie.socialmedia.follow(login)
-[x] hoodie.socialmedia.unfollow(login)
-[] hoodie.socialmedia.post({text:'text'}, /*opitional*/ {type: [mediaplugin.enum]})
-[] hoodie.socialmedia.comment(postId, {text:'text'})
-[] hoodie.socialmedia.like(postId)
-[] hoodie.socialmedia.feed(postId)
-[] hoodie.socialmedia.share(postId)
-[] hoodie.socialmedia.abuse(postId)
-[x] hoodie.socialmedia.following(/*opitional*/ login)
-[x] hoodie.socialmedia.followers(/*opitional*/ login)
-[] hoodie.socialmedia.profile(/*opitional*/ login)
+-  [x] hoodie.socialmedia.follow(login) - wip
+-  [x] hoodie.socialmedia.unfollow(login) - wip
+-  [ ] hoodie.socialmedia.post({text:'text'}, /*opitional*/ {type: [mediaplugin.enum]})
+-  [ ] hoodie.socialmedia.comment(postId, {text:'text'})
+-  [ ] hoodie.socialmedia.like(postId)
+-  [ ] hoodie.socialmedia.feed(postId)
+-  [ ] hoodie.socialmedia.share(postId)
+-  [ ] hoodie.socialmedia.abuse(postId)
+-  [ ] hoodie.socialmedia.following(/*opitional*/ login)
+-  [ ] hoodie.socialmedia.followers(/*opitional*/ login)
+-  [ ] hoodie.socialmedia.profile(/*opitional*/ login)
