@@ -100,128 +100,111 @@ suite('network', function () {
           assert.ok(true, 'follow with sucess');
         });
     });
-   //
-  //   test('hommer not should subscribe bart posts', function (done) {
-  //     this.timeout(10000);
-  //     hoodie.socialmedia.follow('Bart')
-  //       .fail(function (err) {
-  //         done();
-  //         assert.ok((err.message ==='You already subscribed.'), err.message);
-  //       })
-  //       .then(function () {
-  //         done();
-  //         assert.ok(false, 'should throw error [You already subscribed.] ');
-  //       });
-  //   });
-   //
-  //   test('hommer showd subscribe marge posts', function (done) {
-  //     this.timeout(10000);
-  //     hoodie.socialmedia.follow('Margie')
-  //       .fail(function (err) {
-  //         done((err.message !=='You already subscribed.')? err: null);
-  //         assert.ok(false, err.message);
-  //       })
-  //       .then(function () {
-  //         assert.ok(true, 'follow with sucess');
-  //         done();
-  //       });
-  //   });
-   //
-  //   test('hommer showd subscribe lisa posts', function (done) {
-  //     this.timeout(10000);
-  //     hoodie.socialmedia.follow('Lisa')
-  //       .fail(function (err) {
-  //         done((err.message !=='You already subscribed.')? err: null);
-  //         assert.ok(false, err.message);
-  //       })
-  //       .then(function () {
-  //         assert.ok(true, 'follow with sucess');
-  //         done();
-  //       });
-  //   });
-   //
-  //  test('hommer should show 3 subscribers', function (done) {
-  //     this.timeout(10000);
-  //     hoodie.socialmedia.following()
-  //       .fail(function (err) {
-  //         done(err);
-  //         assert.ok(false, err.message);
-  //       })
-  //       .then(function (task) {
-  //         assert.ok((task.subscribers.length === 3) , 'subscribers ' + task.subscribers.length + ' with sucess');
-  //         done();
-  //       });
-  //   });
-   //
-  //  test('hommer should show subscriptions', function (done) {
-  //     this.timeout(10000);
-  //     hoodie.pubsub.followers()
-  //       .fail(function (err) {
-  //         done(err);
-  //         assert.ok(false, err.message);
-  //       })
-  //       .then(function (task) {
-  //         assert.ok((task.subscriptions.length === 0) , 'subscriptions ' + task.subscriptions.length + ' with sucess');
-  //         done();
-  //       });
-  //   });
-   //
-  //   test('hommer showd unsubscribe bart posts', function (done) {
-  //     this.timeout(10000);
-  //     hoodie.socialmedia.unfollow('Bart')
-  //       .fail(function (err) {
-  //         done(err);
-  //         assert.ok(false, err.message);
-  //       })
-  //       .then(function () {
-  //         assert.ok(true, 'follow with sucess');
-  //         done();
-  //       });
-  //   });
 
-    // test('signIn', function (done) {
-    //   this.timeout(10000);
-    //   assert.ok(!hoodie.account.username, 'start logged out');
-    //   hoodie.account.signIn('testuser', 'password')
-    //     .fail(function (err) {
-    //       assert.ok(false, err.message);
-    //     })
-    //     .done(function () {
-    //       assert.equal(hoodie.account.username, 'testuser');
-    //       done();
-    //     })
-    // });
+    test('hommer not should subscribe bart posts', function (done) {
+      this.timeout(10000);
+      hoodie.socialmedia.follow('Bart')
+        .fail(function (err) {
+          done();
+          assert.ok((err.message ==='You already subscribed.'), err.message);
+        })
+        .then(function () {
+          done();
+          assert.ok(false, 'should throw error [You already subscribed.] ');
+        });
+    });
 
-    // test('signOut', function (done) {
-    //   this.timeout(10000);
-    //   hoodie.account.signIn('testuser', 'password')
-    //     .then(function () {
-    //       return hoodie.account.signOut();
-    //     })
-    //     .fail(function (err) {
-    //       assert.ok(false, err.message);
-    //     })
-    //     .done(function () {
-    //       assert.ok(!hoodie.account.username, 'should be logged out');
-    //       done();
-    //     })
-    // });
+    test('hommer showd subscribe marge posts', function (done) {
+      this.timeout(10000);
+      hoodie.socialmedia.follow('Margie')
+        .fail(function (err) {
+          done((err.message !=='You already subscribed.')? err: null);
+          assert.ok(false, err.message);
+        })
+        .then(function () {
+          assert.ok(true, 'follow with sucess');
+          done();
+        });
+    });
 
-    // test('signUp while logged in should fail', function (done) {
-    //   this.timeout(10000);
-    //   hoodie.account.signIn('testuser', 'password')
-    //     .then(function () {
-    //       return hoodie.account.signUp('testuser2', 'password');
-    //     })
-    //     .fail(function (err) {
-    //       assert.ok(true, 'signUp should fail');
-    //       done();
-    //     })
-    //     .done(function () {
-    //       assert.ok(false, 'signUp should not succeed');
-    //       done();
-    //     })
-    // });
+    test('hommer showd subscribe lisa posts', function (done) {
+      this.timeout(10000);
+      hoodie.socialmedia.follow('Lisa')
+        .fail(function (err) {
+          done((err.message !=='You already subscribed.')? err: null);
+          assert.ok(false, err.message);
+        })
+        .then(function () {
+          assert.ok(true, 'follow with sucess');
+          done();
+        });
+    });
+
+   test('hommer should show 3 following', function (done) {
+      this.timeout(10000);
+      hoodie.socialmedia.following()
+        .fail(function (err) {
+          done(err);
+          assert.ok(false, err.message);
+        })
+        .then(function (task) {
+          assert.ok((task.following.length === 3) , 'following ' + task.following.length + ' with sucess');
+          done();
+        });
+    });
+
+   test('hommer should show 0 followers', function (done) {
+      this.timeout(10000);
+      hoodie.socialmedia.followers()
+        .fail(function (err) {
+          done(err);
+          assert.ok(false, err.message);
+        })
+        .then(function (task) {
+          assert.ok((task.followers.length === 0) , 'followers ' + task.followers.length + ' with sucess');
+          done();
+        });
+    });
+
+    test('hommer showd unsubscribe bart posts', function (done) {
+      this.timeout(10000);
+      hoodie.socialmedia.unfollow('Bart')
+        .fail(function (err) {
+          done(err);
+          assert.ok(false, err.message);
+        })
+        .then(function () {
+          assert.ok(true, 'follow with sucess');
+          done();
+        });
+    });
+
+
+   test('hommer should show 2 following', function (done) {
+      this.timeout(10000);
+      hoodie.socialmedia.following()
+        .fail(function (err) {
+          done(err);
+          assert.ok(false, err.message);
+        })
+        .then(function (task) {
+          assert.ok((task.subscriptions.length === 2) , 'subscriptions ' + task.subscriptions.length + ' with sucess');
+          done();
+        });
+    });
+
+   test('lisa should show 1 followers', function (done) {
+      this.timeout(10000);
+      hoodie.socialmedia.followers('Lisa')
+        .fail(function (err) {
+          done(err);
+          assert.ok(false, err.message);
+        })
+        .then(function (task) {
+          assert.ok((task.followers.length === 1) , 'followers ' + task.followers.length + ' with sucess');
+          done();
+        });
+    });
 
   });
 

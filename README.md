@@ -16,14 +16,15 @@ hoodie-plugin-socialmedia
 ```
 
 ## API (Dream Code)
--  [x] hoodie.socialmedia.follow(login) - wip
--  [x] hoodie.socialmedia.unfollow(login) - wip
+-  [x] hoodie.socialmedia.follow(login)
+-  [x] hoodie.socialmedia.unfollow(login)
 -  [ ] hoodie.socialmedia.post({text:'text'}, /*opitional*/ {type: [mediaplugin.enum]})
 -  [ ] hoodie.socialmedia.comment(postId, {text:'text'})
--  [ ] hoodie.socialmedia.like(postId)
+-  [ ] hoodie.socialmedia.count(postId, [type.enum]) 
+-  [ ] hoodie.socialmedia.uncount(postId, [type.enum])
 -  [ ] hoodie.socialmedia.feed(postId)
 -  [ ] hoodie.socialmedia.share(postId)
 -  [ ] hoodie.socialmedia.abuse(postId)
--  [ ] hoodie.socialmedia.following(/*opitional*/ login)
--  [ ] hoodie.socialmedia.followers(/*opitional*/ login)
+-  [x] hoodie.socialmedia.following(/*opitional*/ login)
+-  [x] hoodie.socialmedia.followers(/*opitional*/ login)
 -  [ ] hoodie.socialmedia.profile(/*opitional*/ login)

@@ -16,7 +16,9 @@ var SocialMedia = require('./lib');
 module.exports = function (hoodie, callback) {
   var socialMedia = new SocialMedia(hoodie);
 
+  hoodie.task.on('lookup:add', socialMedia.lookup);
   hoodie.task.on('follow:add', socialMedia.follow);
+  hoodie.task.on('unfollow:add', socialMedia.unfollow);
 
   callback();
 };
