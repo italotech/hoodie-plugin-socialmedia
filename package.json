@@ -41,7 +41,8 @@
   "hoodie": {
     "plugins": [
       "hoodie-plugin-pubsub",
-      "hoodie-plugin-users"
+      "hoodie-plugin-users",
+      "hoodie-plugin-socialmedia"
     ]
   },
   "scripts": {

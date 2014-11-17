@@ -18,13 +18,22 @@ suite('network', function () {
       {user: 'Cat', password: '123'}
     ]
 
+  function signin(u, done) {
+    hoodie.account.signIn(u.user, u.password)
+      .fail(function () { done(); })
+      .done(function () {
+        u.hoodieId = hoodie.id();
+        done();
+      })
+  }
+
   function addUser(u, done) {
     hoodie.account.signOut()
       .fail(function () { done(); })
-      .then(function () {
+      .done(function () {
         hoodie.account.signUp(u.user, u.password)
-          .fail(done)
-          .then(done);
+          .fail(function () { signin(u, done); })
+          .done(function () { signin(u, done); });
     });
   }
 
@@ -57,7 +66,7 @@ suite('network', function () {
           done(err);
           assert.ok(false, err.message);
         })
-        .then(function () {
+        .done(function () {
           done();
         });
     });
