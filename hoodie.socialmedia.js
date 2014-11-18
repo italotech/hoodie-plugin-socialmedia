@@ -82,6 +82,27 @@ Hoodie.extend(function (hoodie) {
         userName: userName
       };
       return hoodie.task('unfollow').start(task);
+    },
+    post: function (mediaObject, userName) {
+      var defer = window.jQuery.Deferred();
+      hoodie.socialmedia.verifyUser(userName)
+        .then(function (task) {
+          task.mediaObject = mediaObject;
+          hoodie.task('post').start(task)
+            .then(defer.resolve)
+            .fail(defer.reject);
+        });
+      return defer.promise();
+    },
+    feed: function (userName) {
+      var defer = window.jQuery.Deferred();
+      hoodie.socialmedia.verifyUser(userName)
+        .then(function (task) {
+          hoodie.task('feed').start(task)
+            .then(defer.resolve)
+            .fail(defer.reject);
+        });
+      return defer.promise();
     }
   }
 

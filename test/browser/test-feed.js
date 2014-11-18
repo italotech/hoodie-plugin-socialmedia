@@ -14,4 +14,18 @@ suite('feed', function () {
   });
 
 
+  test('hommer showd post', function (done) {
+    this.timeout(10000);
+    hoodie.socialmedia.feed()
+      .fail(function (err) {
+        done(err);
+        assert.ok(false, err.message);
+      })
+      .then(function (feed) {
+        console.log(feed);
+        done();
+        assert.ok(true, 'feed with sucess');
+      });
+  });
+
 });
