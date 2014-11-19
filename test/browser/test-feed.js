@@ -179,4 +179,51 @@ suite('feed', function () {
       });
   });
 
+  test('hommer should comment lisa post', function (done) {
+    var lisaPost = this.lisaPost;
+
+    hoodie.socialmedia.comment(lisaPost, {text: 'vegan means eat bacon right?!'})
+      .fail(done)
+      .then(function () {
+        done();
+        assert.ok(true, 'comment with success');
+      });
+  });
+
+  test('lisa should comment lisa post', function (done) {
+    var lisaPost = this.lisaPost;
+    signinUser('Lisa', '123', function () {
+      hoodie.socialmedia.comment(lisaPost, {text: 'no daddy bacon is an animal!'})
+      .fail(done)
+      .then(function (post) {
+        assert.ok(true, 'comment with sucess');
+        done();
+      });
+    })
+  });
+
+  test('bart should comment lisa post', function (done) {
+    var lisaPost = this.lisaPost;
+    signinUser('Bart', '123', function () {
+      hoodie.socialmedia.comment(lisaPost, {text: 'bacon is not animal, right hommer?'})
+      .fail(done)
+      .then(function (post) {
+        assert.ok(true, 'comment with sucess');
+        done();
+      });
+    })
+  });
+
+
+  test('homer should comment again lisa post', function (done) {
+    var lisaPost = this.lisaPost;
+    signinUser('Hommer', '123', function () {
+      hoodie.socialmedia.comment(lisaPost, {text: 'sure bacon is happynes!'})
+      .fail(done)
+      .then(function (post) {
+        assert.ok(true, 'comment with sucess');
+        done();
+      });
+    })
+  });
 });

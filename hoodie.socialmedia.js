@@ -86,11 +86,11 @@ Hoodie.extend(function (hoodie) {
       return hoodie.task('unfollow').start(task);
     },
 
-    post: function (mediaObject, userName) {
+    post: function (postObject, userName) {
       var defer = window.jQuery.Deferred();
       hoodie.socialmedia.verifyUser(userName)
         .then(function (task) {
-          task.mediaObject = mediaObject;
+          task.postObject = postObject;
           hoodie.task('post').start(task)
             .then(defer.resolve)
             .fail(defer.reject);
@@ -98,11 +98,11 @@ Hoodie.extend(function (hoodie) {
       return defer.promise();
     },
 
-    updatePost: function (mediaObject, userName) {
+    updatePost: function (postObject, userName) {
       var defer = window.jQuery.Deferred();
       hoodie.socialmedia.verifyUser(userName)
         .then(function (task) {
-          task.mediaObject = mediaObject;
+          task.postObject = postObject;
           hoodie.task('updatepost').start(task)
             .then(defer.resolve)
             .fail(defer.reject);
@@ -110,11 +110,11 @@ Hoodie.extend(function (hoodie) {
       return defer.promise();
     },
 
-    deletePost: function (mediaObject, userName) {
+    deletePost: function (postObject, userName) {
       var defer = window.jQuery.Deferred();
       hoodie.socialmedia.verifyUser(userName)
         .then(function (task) {
-          task.mediaObject = mediaObject;
+          task.postObject = postObject;
           hoodie.task('deletepost').start(task)
             .then(defer.resolve)
             .fail(defer.reject);
@@ -130,6 +130,14 @@ Hoodie.extend(function (hoodie) {
             .then(defer.resolve)
             .fail(defer.reject);
         });
+      return defer.promise();
+    },
+
+    comment: function (postObjectPost, postObjectComment) {
+      var defer = window.jQuery.Deferred();
+      hoodie.task('comment').start({postObject: postObjectPost, commentObject: postObjectComment})
+        .then(defer.resolve)
+        .fail(defer.reject);
       return defer.promise();
     }
   }

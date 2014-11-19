@@ -22,6 +22,7 @@ module.exports = function (hoodie, callback) {
   hoodie.task.on('post:add', socialMedia.post);
   hoodie.task.on('updatepost:add', socialMedia.updatePost);
   hoodie.task.on('deletepost:add', socialMedia.deletePost);
+  hoodie.task.on('comment:add', socialMedia.comment);
   hoodie.task.on('feed:add', socialMedia.feed);
 
   callback();
