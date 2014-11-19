@@ -57,7 +57,10 @@ Hoodie.extend(function (hoodie) {
         };
         hoodie.task('lookup').start(task)
           .then(function (task) {
-            defer.resolve({userId: task.userId})
+            defer.resolve({
+              userId: task.userId,
+              userName: task.userName
+            })
           })
           .fail(defer.reject);
       };
@@ -107,11 +110,22 @@ Hoodie.extend(function (hoodie) {
       return defer.promise();
     },
 
+    deletePost: function (mediaObject, userName) {
+      var defer = window.jQuery.Deferred();
+      hoodie.socialmedia.verifyUser(userName)
+        .then(function (task) {
+          task.mediaObject = mediaObject;
+          hoodie.task('deletepost').start(task)
+            .then(defer.resolve)
+            .fail(defer.reject);
+        });
+      return defer.promise();
+    },
+
     feed: function (userName) {
       var defer = window.jQuery.Deferred();
       hoodie.socialmedia.verifyUser(userName)
         .then(function (task) {
-          console.log('feed', task)
           hoodie.task('feed').start({userId: task.userId})
             .then(defer.resolve)
             .fail(defer.reject);

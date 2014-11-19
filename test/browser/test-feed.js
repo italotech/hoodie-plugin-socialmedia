@@ -2,6 +2,26 @@ suite('feed', function () {
   this.timeout(15000);
 
   suiteSetup(loadUsers);
+  var cleanPosts = function (u, done) {
+    hoodie.account.signIn(u.username, u.password)
+      .then(function () {
+        hoodie.socialmedia.deletePost()
+        .always(function () {
+          hoodie.account.signOut()
+            .always(function () { done() } );
+        })
+      });
+  };
+  var cleanAllPosts = function (done) {
+    var users = window.fixtures['users'];
+
+    localStorage.clear();
+    hoodie.account.signOut()
+      .always(function () {
+        async.eachSeries(users, cleanPosts, done);
+      });
+  };
+  suiteSetup(cleanAllPosts);
 
   test('signIn hommer', function (done) {
     hoodie.account.signIn('Hommer', '123')
@@ -45,7 +65,6 @@ suite('feed', function () {
     var hommerPost = this.hommerPost;
     hommerPost.title = 'D\'oh Homer';
     hommerPost.text = 'Hmm... Donuts!';
-    console.log(hommerPost)
 
     hoodie.socialmedia.updatePost(hommerPost)
       .fail(done)
@@ -55,5 +74,109 @@ suite('feed', function () {
       });
   });
 
+  test('Lisa should post', function (done) {
+    signinUser('Lisa', '123', function () {
+      hoodie.socialmedia.post({text: 'i m vegan!'})
+      .fail(function (err) {
+        done((err.message !== 'conflict') ? err: null);
+        assert.ok(false, err.message);
+      })
+      .then(function (post) {
+        assert.ok(true, 'post with sucess');
+        done();
+      });
+    })
+  });
+
+
+  test('lisa not should edit hommer post', function (done) {
+    var hommerPost = this.hommerPost;
+    hommerPost.title = 'D\'oh Homer';
+    hommerPost.text = 'vegan daddy!!';
+
+    hoodie.socialmedia.updatePost(hommerPost)
+      .fail(function () {
+        done();
+        assert.ok(true, 'post not should edit by lisa');
+      })
+      .then(function () {
+        done();
+        assert.ok(false, 'post hould edit only by owner');
+      });
+  });
+
+
+  test('lisa not should delete hommer post', function (done) {
+    var hommerPost = this.hommerPost;
+
+    hoodie.socialmedia.deletePost(hommerPost)
+      .fail(function () {
+        done();
+        assert.ok(true, 'post not should delete by lisa');
+      })
+      .then(function () {
+        done();
+        assert.ok(false, 'post hould delete only by owner');
+      });
+  });
+
+  test('Hommer should get in feed post from lisa', function (done) {
+    signinUser('Hommer', '123', function () {
+      hoodie.socialmedia.feed()
+      .fail(function (err) {
+        done(err);
+        assert.ok(false, err.message);
+      })
+      .then(function (feed) {
+        done();
+        assert.ok(feed.rows.length == 2, 'feed with sucess');
+      });
+    })
+  });
+
+  test('Hommer should get feed from lisa', function (done) {
+    hoodie.socialmedia.feed('Lisa')
+    .fail(function (err) {
+      done(err);
+      assert.ok(false, err.message);
+    })
+    .then(function (feed) {
+      this.lisaPost = feed.rows[0];
+      done();
+      assert.ok(feed.rows.length == 1, 'feed with sucess');
+    }.bind(this));
+  });
+
+
+ test('hommer not should edit lisa post', function (done) {
+    var lisaPost = this.lisaPost;
+    lisaPost.title = 'Lisaaa';
+    lisaPost.text = 'vegan?? chamed!';
+
+    hoodie.socialmedia.updatePost(lisaPost)
+      .fail(function () {
+        done();
+        assert.ok(true, 'post not should edit by hommer');
+      })
+      .then(function () {
+        done();
+        assert.ok(false, 'post hould edit only by owner');
+      });
+  });
+
+
+  test('hommer not should delete lisa post', function (done) {
+    var lisaPost = this.lisaPost;
+
+    hoodie.socialmedia.deletePost(lisaPost)
+      .fail(function () {
+        done();
+        assert.ok(true, 'post not should delete by hommer');
+      })
+      .then(function () {
+        done();
+        assert.ok(false, 'post hould delete only by owner');
+      });
+  });
 
 });
