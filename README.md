@@ -5,14 +5,21 @@ hoodie-plugin-socialmedia
 ## Dependencies
 ```shell
   hoodie install hoodie-plugin-socialmedia
+```
+for cordova/phonegap users
+```shell
   bower install hoodie-plugin-socialmedia
 ```
 
-
 ## Setup client
 ```html
-  <script src="lib/hoodie/dist/hoodie.js"></script>
-  <script src="lib/hoodie-plugin-socialmedia/hoodie.socialmedia.js"></script>
+ <script src="/_api/_files/hoodie.js"></script>
+```
+for cordova/phonegap users
+
+```html
+  <script src="<bowerdir>/hoodie/dist/hoodie.js"></script>
+  <script src="<bowerdir>/hoodie-plugin-socialmedia/hoodie.socialmedia.js"></script>
 ```
 
 ## API (Dream Code)
@@ -34,4 +41,5 @@ hoodie-plugin-socialmedia
 -  [x] hoodie.socialmedia.abuse(postId)
 -  [x] hoodie.socialmedia.following(/*opitional*/ login)
 -  [x] hoodie.socialmedia.followers(/*opitional*/ login)
--  [ ] hoodie.socialmedia.profile(/*opitional*/ login)
+-  [x] hoodie.socialmedia.getProfile(/*opitional*/ login)
+-  [x] hoodie.socialmedia.updateProfile(/*opitional*/ login, profileObject)

@@ -48,6 +48,10 @@
   "scripts": {
     "test": "grunt test"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/goappes/hoodie-plugin-socialmedia"
+  },
   "maintainers": [
     {
       "name": "gabriel",

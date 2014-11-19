@@ -161,6 +161,23 @@ Hoodie.extend(function (hoodie) {
         .fail(defer.reject);
       return defer.promise();
     },
+    getProfile: function (userName) {
+      var defer = window.jQuery.Deferred();
+      hoodie.socialmedia.verifyUser(userName)
+        .then(function (task) {
+          hoodie.task('getprofile').start({userId: task.userId})
+            .then(defer.resolve)
+            .fail(defer.reject);
+        });
+      return defer.promise();
+    },
+    updateProfile: function (profileObject) {
+      var defer = window.jQuery.Deferred();
+      hoodie.task('updateprofile').start({profileObject: profileObject})
+        .then(defer.resolve)
+        .fail(defer.reject);
+      return defer.promise();
+    },
   }
   hoodie.socialmedia.like = _.partialRight(hoodie.socialmedia.count, 'like');
   hoodie.socialmedia.unlike = _.partialRight(hoodie.socialmedia.uncount, 'like');
