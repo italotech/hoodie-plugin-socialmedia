@@ -8,34 +8,33 @@
 Hoodie.extend(function (hoodie) {
   'use strict';
 
-
   var _subscribers = function (task) {
     var defer = window.jQuery.Deferred();
     hoodie.task('subscribers').start(task)
-        .then(defer.resolve)
-        .fail(defer.reject);
+      .then(defer.resolve)
+      .fail(defer.reject);
     return defer.promise();
   };
 
   var _subscriptions = function (task) {
     var defer = window.jQuery.Deferred();
     hoodie.task('subscriptions').start(task)
-        .then(defer.resolve)
-        .fail(defer.reject);
+      .then(defer.resolve)
+      .fail(defer.reject);
     return defer.promise();
   };
 
+  var _handleFollowing = function (task) {
+    task.following = task.subscriptions;
+    return task;
+  };
+
+  var _handleFollowers = function (task) {
+    task.followers = task.subscribers;
+    return task;
+  };
+
   hoodie.socialmedia = {
-
-    handleFollowing: function (task) {
-      task.following = task.subscriptions;
-      return task;
-    },
-
-    handleFollowers: function (task) {
-      task.followers = task.subscribers;
-      return task;
-    },
 
     follow: function (userName) {
       var task = {
@@ -68,13 +67,13 @@ Hoodie.extend(function (hoodie) {
     following: function (userName) {
       return hoodie.socialmedia.verifyUser(userName)
         .then(_subscriptions)
-        .then(hoodie.socialmedia.handleFollowing);
+        .then(_handleFollowing);
     },
 
     followers: function (userName) {
       return hoodie.socialmedia.verifyUser(userName)
         .then(_subscribers)
-        .then(hoodie.socialmedia.handleFollowers);
+        .then(_handleFollowers);
     },
 
     unfollow: function (userName) {
@@ -83,6 +82,7 @@ Hoodie.extend(function (hoodie) {
       };
       return hoodie.task('unfollow').start(task);
     },
+
     post: function (mediaObject, userName) {
       var defer = window.jQuery.Deferred();
       hoodie.socialmedia.verifyUser(userName)
@@ -94,11 +94,25 @@ Hoodie.extend(function (hoodie) {
         });
       return defer.promise();
     },
+
+    updatePost: function (mediaObject, userName) {
+      var defer = window.jQuery.Deferred();
+      hoodie.socialmedia.verifyUser(userName)
+        .then(function (task) {
+          task.mediaObject = mediaObject;
+          hoodie.task('updatepost').start(task)
+            .then(defer.resolve)
+            .fail(defer.reject);
+        });
+      return defer.promise();
+    },
+
     feed: function (userName) {
       var defer = window.jQuery.Deferred();
       hoodie.socialmedia.verifyUser(userName)
         .then(function (task) {
-          hoodie.task('feed').start(task)
+          console.log('feed', task)
+          hoodie.task('feed').start({userId: task.userId})
             .then(defer.resolve)
             .fail(defer.reject);
         });
