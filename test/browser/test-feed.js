@@ -226,4 +226,103 @@ suite('feed', function () {
       });
     })
   });
+
+  test('homer should like lisa post', function (done) {
+    var lisaPost = this.lisaPost;
+    hoodie.socialmedia.count(lisaPost, 'like')
+    .fail(done)
+    .then(function (post) {
+      assert.ok(true, 'comment with sucess');
+      done();
+    });
+  });
+
+
+  test('lisa should like lisa post', function (done) {
+    var lisaPost = this.lisaPost;
+    signinUser('Lisa', '123', function () {
+      hoodie.socialmedia.count(lisaPost, 'like')
+      .fail(done)
+      .then(function (post) {
+        assert.ok(true, 'comment with sucess');
+        done();
+      });
+    })
+  });
+
+
+  test('bart should like lisa post', function (done) {
+    var lisaPost = this.lisaPost;
+    signinUser('Bart', '123', function () {
+      hoodie.socialmedia.count(lisaPost, 'like')
+      .fail(done)
+      .then(function (post) {
+        assert.ok(true, 'comment with sucess');
+        done();
+      });
+    })
+  });
+
+
+  test('hommer should unlike lisa post', function (done) {
+    var lisaPost = this.lisaPost;
+    signinUser('Hommer', '123', function () {
+      hoodie.socialmedia.uncount(lisaPost, 'like')
+      .fail(done)
+      .then(function (post) {
+        assert.ok(true, 'comment with sucess');
+        done();
+      });
+    })
+  });
+
+  test('cat should like with like lisa post', function (done) {
+    var lisaPost = this.lisaPost;
+    signinUser('Cat', '123', function () {
+      hoodie.socialmedia.like(lisaPost)
+      .fail(done)
+      .then(function (post) {
+        assert.ok(true, 'comment with sucess');
+        done();
+      });
+    })
+  });
+
+  test('dog should like with like lisa post', function (done) {
+    var lisaPost = this.lisaPost;
+    signinUser('Dog', '123', function () {
+      hoodie.socialmedia.like(lisaPost)
+      .fail(done)
+      .then(function (post) {
+        assert.ok(true, 'comment with sucess');
+        done();
+      });
+    })
+  });
+
+  test('Dog should unlike with unlike lisa post', function (done) {
+    var lisaPost = this.lisaPost;
+    signinUser('Dog', '123', function () {
+      hoodie.socialmedia.unlike(lisaPost)
+      .fail(done)
+      .then(function (post) {
+        assert.ok(true, 'comment with sucess');
+        done();
+      });
+    })
+  });
+
+
+  test('hommer should get lisa post', function (done) {
+    var lisaPost = this.lisaPost;
+    signinUser('Hommer', '123', function () {
+      hoodie.socialmedia.getPost(lisaPost)
+      .fail(done)
+      .then(function (post) {
+        assert.ok(post.postObject.countType.like.length === 3, 'comment with sucess');
+        done();
+      });
+    })
+  });
+
 });

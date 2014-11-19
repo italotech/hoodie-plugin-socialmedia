@@ -139,7 +139,31 @@ Hoodie.extend(function (hoodie) {
         .then(defer.resolve)
         .fail(defer.reject);
       return defer.promise();
-    }
+    },
+    count: function (postObjectPost, countType) {
+      var defer = window.jQuery.Deferred();
+      hoodie.task('count').start({postObject: postObjectPost, countType: countType})
+        .then(defer.resolve)
+        .fail(defer.reject);
+      return defer.promise();
+    },
+    uncount: function (postObjectPost, countType) {
+      var defer = window.jQuery.Deferred();
+      hoodie.task('uncount').start({postObject: postObjectPost, countType: countType})
+        .then(defer.resolve)
+        .fail(defer.reject);
+      return defer.promise();
+    },
+    getPost: function (postObjectPost) {
+      var defer = window.jQuery.Deferred();
+      hoodie.task('getpost').start({postObject: postObjectPost})
+        .then(defer.resolve)
+        .fail(defer.reject);
+      return defer.promise();
+    },
   }
+  hoodie.socialmedia.like = _.partialRight(hoodie.socialmedia.count, 'like');
+  hoodie.socialmedia.unlike = _.partialRight(hoodie.socialmedia.uncount, 'like');
+  hoodie.socialmedia.abuse = _.partialRight(hoodie.socialmedia.count, 'abuse');
 
 });
