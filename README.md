@@ -1,6 +1,6 @@
 hoodie-plugin-socialmedia
 ====================
-[![Build Status](https://travis-ci.org/goappes/hoodie-plugin-socialmedia.svg?branch=master)](https://travis-ci.org/goappes/hoodie-plugin-socialmedia) [![Dependencies](https://david-dm.org/goappes/hoodie-plugin-socialmedia.png)](https://david-dm.org/goappes/hoodie-plugin-socialmedia) [![devDependency Status](https://david-dm.org/goappes/hoodie-plugin-socialmedia/dev-status.svg)](https://david-dm.org/goappes/hoodie-plugin-socialmedia#info=devDependencies)
+[![Build Status](https://travis-ci.org/goappes/hoodie-plugin-socialmedia.svg?branch=master)](https://travis-ci.org/goappes/hoodie-plugin-socialmedia) [![Dependencies](https://david-dm.org/goappes/hoodie-plugin-socialmedia.png)](https://david-dm.org/goappes/hoodie-plugin-socialmedia) [![devDependency Status](https://david-dm.org/goappes/hoodie-plugin-socialmedia/dev-status.svg)](https://david-dm.org/goappes/hoodie-plugin-socialmedia#info=devDependencies) [![Code Climate](https://codeclimate.com/github/goappes/hoodie-plugin-socialmedia/badges/gpa.svg)](https://codeclimate.com/github/goappes/hoodie-plugin-socialmedia)
 
 ## Dependencies
 ```shell
