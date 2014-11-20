@@ -8,7 +8,8 @@
     "afterEach",
     "before",
     "beforeEach",
-    "root"
+    "root",
+    "window"
   ],
 
   "indent": 2,

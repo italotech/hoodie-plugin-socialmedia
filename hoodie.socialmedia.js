@@ -34,6 +34,19 @@ Hoodie.extend(function (hoodie) {
     return task;
   };
 
+  function partialRight(fn /*, args...*/) {
+    // A reference to the Array#slice method.
+    var slice = Array.prototype.slice;
+    // Convert arguments object to an array, removing the first argument.
+    var args = slice.call(arguments, 1);
+
+    return function () {
+      // Invoke the originally-specified function, passing in all just-
+      // specified arguments, followed by any originally-specified arguments.
+      return fn.apply(this, slice.call(arguments, 0).concat(args));
+    };
+  }
+
   hoodie.socialmedia = {
 
     follow: function (userName) {
@@ -49,7 +62,7 @@ Hoodie.extend(function (hoodie) {
       if (!userName) {
         task = {
           userId: hoodie.id()
-        }
+        };
         defer.resolve(task);
       } else {
         task = {
@@ -60,10 +73,10 @@ Hoodie.extend(function (hoodie) {
             defer.resolve({
               userId: task.userId,
               userName: task.userName
-            })
+            });
           })
           .fail(defer.reject);
-      };
+      }
       return defer.promise();
     },
 
@@ -178,9 +191,9 @@ Hoodie.extend(function (hoodie) {
         .fail(defer.reject);
       return defer.promise();
     },
-  }
-  hoodie.socialmedia.like = _.partialRight(hoodie.socialmedia.count, 'like');
-  hoodie.socialmedia.unlike = _.partialRight(hoodie.socialmedia.uncount, 'like');
-  hoodie.socialmedia.abuse = _.partialRight(hoodie.socialmedia.count, 'abuse');
+  };
+  hoodie.socialmedia.like = partialRight(hoodie.socialmedia.count, 'like');
+  hoodie.socialmedia.unlike = partialRight(hoodie.socialmedia.uncount, 'like');
+  hoodie.socialmedia.abuse = partialRight(hoodie.socialmedia.count, 'abuse');
 
 });
