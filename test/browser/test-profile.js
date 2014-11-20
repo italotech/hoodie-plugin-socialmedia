@@ -1,4 +1,4 @@
-suite('feed', function () {
+suite('profiles', function () {
   this.timeout(15000);
 
   suiteSetup(loadUsers);
