@@ -39,7 +39,7 @@ suite('profiles', function () {
       });
   });
 
-  test('hommer should updateProfile from Lisa', function (done) {
+  test('hommer should updateProfile', function (done) {
     var hommerProfile = this.hommerProfile;
     hommerProfile.FirstName = 'Hommer';
     hommerProfile.LastName = 'Simpson';
