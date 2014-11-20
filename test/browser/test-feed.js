@@ -322,6 +322,22 @@ suite('feed', function () {
     })
   });
 
+  test('hommer should not delete lisa comment', function (done) {
+    var lisaPost = this.lisaPost;
+    var lisaComment = this.lisaComment;
+    signinUser('Hommer', '123', function () {
+      hoodie.socialmedia.deleteComment(lisaPost, lisaComment)
+        .fail(function (err) {
+          assert.ok(err, 'comment with success');
+          done();
+        })
+        .then(function () {
+          assert.ok(false, 'wrong comment update');
+          done();
+        });
+    })
+  });
+
   test('hommer should update his comment', function (done) {
     var lisaPost = this.lisaPost;
     var hommerComment = this.hommerComment;
@@ -336,4 +352,21 @@ suite('feed', function () {
         });
     })
   });
+
+  test('hommer should delete his comment', function (done) {
+    var lisaPost = this.lisaPost;
+    var hommerComment = this.hommerComment;
+    signinUser('Hommer', '123', function () {
+      hoodie.socialmedia.deleteComment(lisaPost, hommerComment)
+        .fail(function (err) {
+          console.log(err);
+          done(err);
+        })
+        .then(function () {
+          assert.ok(true, 'delete comment with success');
+          done();
+        });
+    })
+  });
+
 });
