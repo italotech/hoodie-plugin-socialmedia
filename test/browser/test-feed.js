@@ -27,7 +27,7 @@ suite('feed', function () {
         assert.ok(false, err.message);
       })
       .then(function () {
-        assert.ok(true, 'post with sucess');
+        assert.ok(true, 'post with success');
         done();
       });
   });
@@ -38,7 +38,7 @@ suite('feed', function () {
       .then(function (feed) {
         this.hommerPost = feed.rows[0];
         done();
-        assert.ok(true, 'feed with sucess');
+        assert.ok(true, 'feed with success');
       }.bind(this));
   });
 
@@ -51,7 +51,7 @@ suite('feed', function () {
       .fail(done)
       .then(function () {
         done();
-        assert.ok(true, 'post with sucess');
+        assert.ok(true, 'post with success');
       });
   });
 
@@ -63,7 +63,7 @@ suite('feed', function () {
           assert.ok(false, err.message);
         })
         .then(function (post) {
-          assert.ok(true, 'post with sucess');
+          assert.ok(true, 'post with success');
           done();
         });
     })
@@ -110,7 +110,7 @@ suite('feed', function () {
         })
         .then(function (feed) {
           done();
-          assert.ok(feed.rows.length == 2, 'feed with sucess');
+          assert.ok(feed.rows.length == 2, 'feed with success');
         });
     })
   });
@@ -124,7 +124,7 @@ suite('feed', function () {
       .then(function (feed) {
         this.lisaPost = feed.rows[0];
         done();
-        assert.ok(feed.rows.length == 1, 'feed with sucess');
+        assert.ok(feed.rows.length == 1, 'feed with success');
       }.bind(this));
   });
 
@@ -166,21 +166,23 @@ suite('feed', function () {
     hoodie.socialmedia.comment(lisaPost, {text: 'vegan means eat bacon right?!'})
       .fail(done)
       .then(function (post) {
+        this.hommerComment = post.commentObject;
         assert.ok(true, 'comment with success');
         done();
-      });
+      }.bind(this));
   });
 
   test('lisa should comment lisa post', function (done) {
     var lisaPost = this.lisaPost;
     signinUser('Lisa', '123', function () {
       hoodie.socialmedia.comment(lisaPost, {text: 'no daddy bacon is an animal!'})
-      .fail(done)
-      .then(function (post) {
-        assert.ok(true, 'comment with sucess');
-        done();
-      });
-    })
+        .fail(done)
+        .then(function (post) {
+          this.lisaComment = post.commentObject;
+          assert.ok(true, 'comment with success');
+          done();
+        }.bind(this));
+    }.bind(this));
   });
 
   test('bart should comment lisa post', function (done) {
@@ -189,7 +191,7 @@ suite('feed', function () {
       hoodie.socialmedia.comment(lisaPost, {text: 'bacon is not animal, right hommer?'})
       .fail(done)
       .then(function (post) {
-        assert.ok(true, 'comment with sucess');
+        assert.ok(true, 'comment with success');
         done();
       });
     })
@@ -201,7 +203,7 @@ suite('feed', function () {
       hoodie.socialmedia.comment(lisaPost, {text: 'sure bacon is happynes!'})
       .fail(done)
       .then(function (post) {
-        assert.ok(true, 'comment with sucess');
+        assert.ok(true, 'comment with success');
         done();
       });
     })
@@ -212,7 +214,7 @@ suite('feed', function () {
     hoodie.socialmedia.count(lisaPost, 'like')
       .fail(done)
       .then(function (post) {
-        assert.ok(true, 'comment with sucess');
+        assert.ok(true, 'comment with success');
         done();
       });
   });
@@ -224,7 +226,7 @@ suite('feed', function () {
       hoodie.socialmedia.count(lisaPost, 'like')
       .fail(done)
       .then(function (post) {
-        assert.ok(true, 'comment with sucess');
+        assert.ok(true, 'comment with success');
         done();
       });
     })
@@ -237,7 +239,7 @@ suite('feed', function () {
       hoodie.socialmedia.count(lisaPost, 'like')
       .fail(done)
       .then(function (post) {
-        assert.ok(true, 'comment with sucess');
+        assert.ok(true, 'comment with success');
         done();
       });
     })
@@ -250,7 +252,7 @@ suite('feed', function () {
       hoodie.socialmedia.uncount(lisaPost, 'like')
       .fail(done)
       .then(function (post) {
-        assert.ok(true, 'comment with sucess');
+        assert.ok(true, 'comment with success');
         done();
       });
     })
@@ -262,7 +264,7 @@ suite('feed', function () {
       hoodie.socialmedia.like(lisaPost)
       .fail(done)
       .then(function (post) {
-        assert.ok(true, 'comment with sucess');
+        assert.ok(true, 'comment with success');
         done();
       });
     })
@@ -274,7 +276,7 @@ suite('feed', function () {
       hoodie.socialmedia.like(lisaPost)
       .fail(done)
       .then(function (post) {
-        assert.ok(true, 'comment with sucess');
+        assert.ok(true, 'comment with success');
         done();
       });
     })
@@ -286,12 +288,11 @@ suite('feed', function () {
       hoodie.socialmedia.unlike(lisaPost)
       .fail(done)
       .then(function (post) {
-        assert.ok(true, 'comment with sucess');
+        assert.ok(true, 'comment with success');
         done();
       });
     })
   });
-
 
   test('hommer should get lisa post', function (done) {
     var lisaPost = this.lisaPost;
@@ -299,7 +300,38 @@ suite('feed', function () {
       hoodie.socialmedia.getPost(lisaPost)
         .fail(done)
         .then(function (post) {
-          assert.ok(post.postObject.countType.like.length === 3, 'comment with sucess');
+          assert.ok(post.postObject.countType.like.length === 3, 'comment with success');
+          done();
+        });
+    })
+  });
+
+  test('hommer should not update lisa comment', function (done) {
+    var lisaPost = this.lisaPost;
+    var lisaComment = this.lisaComment;
+    signinUser('Hommer', '123', function () {
+      hoodie.socialmedia.updateComment(lisaPost, lisaComment)
+        .fail(function (err) {
+          assert.ok(err, 'comment with success');
+          done();
+        })
+        .then(function () {
+          assert.ok(false, 'wrong comment update');
+          done();
+        });
+    })
+  });
+
+  test('hommer should update his comment', function (done) {
+    var lisaPost = this.lisaPost;
+    var hommerComment = this.hommerComment;
+    hommerComment.text = 'D\'oh!!!!!!!';
+    signinUser('Hommer', '123', function () {
+      hoodie.socialmedia.updateComment(lisaPost, hommerComment)
+        .fail(done)
+        .then(function (post) {
+          console.log(post)
+          assert.ok(post.commentObject.text === hommerComment.text, 'comment with success');
           done();
         });
     })

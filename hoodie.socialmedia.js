@@ -153,6 +153,13 @@ Hoodie.extend(function (hoodie) {
         .fail(defer.reject);
       return defer.promise();
     },
+    updateComment: function (postObjectPost, postObjectComment) {
+      var defer = window.jQuery.Deferred();
+      hoodie.task('updatecomment').start({postObject: postObjectPost, commentObject: postObjectComment})
+        .then(defer.resolve)
+        .fail(defer.reject);
+      return defer.promise();
+    },
     count: function (postObjectPost, countType) {
       var defer = window.jQuery.Deferred();
       hoodie.task('count').start({postObject: postObjectPost, countType: countType})
