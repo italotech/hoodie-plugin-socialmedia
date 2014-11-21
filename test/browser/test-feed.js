@@ -346,7 +346,6 @@ suite('feed', function () {
       hoodie.socialmedia.updateComment(lisaPost, hommerComment)
         .fail(done)
         .then(function (post) {
-          console.log(post)
           assert.ok(post.commentObject.text === hommerComment.text, 'comment with success');
           done();
         });
@@ -359,7 +358,6 @@ suite('feed', function () {
     signinUser('Hommer', '123', function () {
       hoodie.socialmedia.deleteComment(lisaPost, hommerComment)
         .fail(function (err) {
-          console.log(err);
           done(err);
         })
         .then(function () {
@@ -374,7 +372,6 @@ suite('feed', function () {
     signinUser('Hommer', '123', function () {
       hoodie.socialmedia.share(lisaPost)
         .fail(function (err) {
-          console.log(err);
           done(err);
         })
         .then(function () {

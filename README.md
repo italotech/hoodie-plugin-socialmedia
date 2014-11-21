@@ -37,7 +37,7 @@ for cordova/phonegap users
 -  [x] hoodie.socialmedia.like(postId) 
 -  [x] hoodie.socialmedia.unlike(postId)
 -  [x] hoodie.socialmedia.feed(postId)
--  [ ] hoodie.socialmedia.share(postId)
+-  [x] hoodie.socialmedia.share(postId)
 -  [x] hoodie.socialmedia.abuse(postId)
 -  [x] hoodie.socialmedia.following(/*opitional*/ login)
 -  [x] hoodie.socialmedia.followers(/*opitional*/ login)
