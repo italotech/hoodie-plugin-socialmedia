@@ -41,5 +41,26 @@ var signinUser = function (user, pass, done) {
     .always(function () {
       hoodie.account.signIn(user, pass)
         .always(done);
-    })
-}
+    });
+};
+
+var cleanPosts = function (u, done) {
+  hoodie.account.signIn(u.username, u.password)
+    .then(function () {
+      hoodie.socialmedia.deletePost()
+      .always(function () {
+        hoodie.account.signOut()
+          .always(function () { done() } );
+      })
+    });
+};
+
+var cleanAllPosts = function (done) {
+  var users = window.fixtures['users'];
+
+  localStorage.clear();
+  hoodie.account.signOut()
+    .always(function () {
+      async.eachSeries(users, cleanPosts, done);
+    });
+};

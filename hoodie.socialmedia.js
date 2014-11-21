@@ -153,6 +153,20 @@ Hoodie.extend(function (hoodie) {
         .fail(defer.reject);
       return defer.promise();
     },
+    updateComment: function (postObjectPost, postObjectComment) {
+      var defer = window.jQuery.Deferred();
+      hoodie.task('updatecomment').start({postObject: postObjectPost, commentObject: postObjectComment})
+        .then(defer.resolve)
+        .fail(defer.reject);
+      return defer.promise();
+    },
+    deleteComment: function (postObjectPost, postObjectComment) {
+      var defer = window.jQuery.Deferred();
+      hoodie.task('deletecomment').start({postObject: postObjectPost, commentObject: postObjectComment})
+        .then(defer.resolve)
+        .fail(defer.reject);
+      return defer.promise();
+    },
     count: function (postObjectPost, countType) {
       var defer = window.jQuery.Deferred();
       hoodie.task('count').start({postObject: postObjectPost, countType: countType})
@@ -187,6 +201,13 @@ Hoodie.extend(function (hoodie) {
     updateProfile: function (profileObject) {
       var defer = window.jQuery.Deferred();
       hoodie.task('updateprofile').start({profileObject: profileObject})
+        .then(defer.resolve)
+        .fail(defer.reject);
+      return defer.promise();
+    },
+    share: function (postObjectPost) {
+      var defer = window.jQuery.Deferred();
+      hoodie.task('share').start({postObject: postObjectPost})
         .then(defer.resolve)
         .fail(defer.reject);
       return defer.promise();
