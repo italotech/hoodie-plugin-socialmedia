@@ -369,4 +369,19 @@ suite('feed', function () {
     })
   });
 
+  test('hommer should share lisa post', function (done) {
+    var lisaPost = this.lisaPost;
+    signinUser('Hommer', '123', function () {
+      hoodie.socialmedia.share(lisaPost)
+        .fail(function (err) {
+          console.log(err);
+          done(err);
+        })
+        .then(function () {
+          assert.ok(true, 'share post with success');
+          done();
+        });
+    })
+  });
+
 });

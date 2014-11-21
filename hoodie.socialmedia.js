@@ -205,6 +205,13 @@ Hoodie.extend(function (hoodie) {
         .fail(defer.reject);
       return defer.promise();
     },
+    share: function (postObjectPost) {
+      var defer = window.jQuery.Deferred();
+      hoodie.task('share').start({postObject: postObjectPost})
+        .then(defer.resolve)
+        .fail(defer.reject);
+      return defer.promise();
+    },
   };
   hoodie.socialmedia.like = partialRight(hoodie.socialmedia.count, 'like');
   hoodie.socialmedia.unlike = partialRight(hoodie.socialmedia.uncount, 'like');

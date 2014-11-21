@@ -31,6 +31,7 @@ module.exports = function (hoodie, callback) {
   hoodie.task.on('feed:add', socialMedia.feed);
   hoodie.task.on('getprofile:add', socialMedia.getProfile);
   hoodie.task.on('updateprofile:add', socialMedia.updateProfile);
+  hoodie.task.on('share:add', socialMedia.sharePost);
 
   hoodie.account.on('change', socialMedia.addProfileEachUser);
 
