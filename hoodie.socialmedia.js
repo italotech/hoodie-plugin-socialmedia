@@ -50,10 +50,14 @@ Hoodie.extend(function (hoodie) {
   hoodie.socialmedia = {
 
     follow: function (userName) {
+      var defer = window.jQuery.Deferred();
       var task = {
         userName: userName
       };
-      return hoodie.task('follow').start(task);
+      hoodie.task('follow').start(task)
+        .then(defer.resolve)
+        .fail(defer.reject);
+      return defer.promise();      
     },
 
     verifyUser: function (userName) {
@@ -102,6 +106,7 @@ Hoodie.extend(function (hoodie) {
     post: function (postObject, userName) {
       var defer = window.jQuery.Deferred();
       hoodie.socialmedia.verifyUser(userName)
+        .fail(defer.reject)
         .then(function (task) {
           task.postObject = postObject;
           hoodie.task('post').start(task)
@@ -114,6 +119,7 @@ Hoodie.extend(function (hoodie) {
     updatePost: function (postObject, userName) {
       var defer = window.jQuery.Deferred();
       hoodie.socialmedia.verifyUser(userName)
+        .fail(defer.reject)
         .then(function (task) {
           task.postObject = postObject;
           hoodie.task('updatepost').start(task)
@@ -126,6 +132,7 @@ Hoodie.extend(function (hoodie) {
     deletePost: function (postObject, userName) {
       var defer = window.jQuery.Deferred();
       hoodie.socialmedia.verifyUser(userName)
+        .fail(defer.reject)
         .then(function (task) {
           task.postObject = postObject;
           hoodie.task('deletepost').start(task)
@@ -138,6 +145,7 @@ Hoodie.extend(function (hoodie) {
     feed: function (userName) {
       var defer = window.jQuery.Deferred();
       hoodie.socialmedia.verifyUser(userName)
+        .fail(defer.reject)
         .then(function (task) {
           hoodie.task('feed').start({userId: task.userId})
             .then(defer.resolve)
@@ -191,11 +199,19 @@ Hoodie.extend(function (hoodie) {
     getProfile: function (userName) {
       var defer = window.jQuery.Deferred();
       hoodie.socialmedia.verifyUser(userName)
+        .fail(defer.reject)
         .then(function (task) {
-          hoodie.task('getprofile').start({userId: task.userId})
+          hoodie.socialmedia.getProfileById(task.userId)
             .then(defer.resolve)
             .fail(defer.reject);
         });
+      return defer.promise();
+    },
+    getProfileById: function (userId) {
+      var defer = window.jQuery.Deferred();
+      hoodie.task('getprofile').start({userId: userId})
+        .then(defer.resolve)
+        .fail(defer.reject);
       return defer.promise();
     },
     updateProfile: function (profileObject) {
