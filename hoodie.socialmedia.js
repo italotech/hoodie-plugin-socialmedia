@@ -57,7 +57,7 @@ Hoodie.extend(function (hoodie) {
       hoodie.task('follow').start(task)
         .then(defer.resolve)
         .fail(defer.reject);
-      return defer.promise();      
+      return defer.promise();
     },
 
     verifyUser: function (userName) {
