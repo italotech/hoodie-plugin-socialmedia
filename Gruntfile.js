@@ -96,7 +96,7 @@ module.exports = function (grunt) {
       files: [
         'Gruntfile.js',
         'hoodie.socialmedia.js',
-        'index.js',
+        'worker.js',
         'lib/*.js',
         'hooks/*.js'
       ],

@@ -10,6 +10,7 @@ Hoodie.extend(function (hoodie) {
 
   var _subscribers = function (task) {
     var defer = window.jQuery.Deferred();
+    defer.notify('_subscribers', arguments, false);
     hoodie.task('subscribers').start(task)
       .then(defer.resolve)
       .fail(defer.reject);
@@ -18,6 +19,7 @@ Hoodie.extend(function (hoodie) {
 
   var _subscriptions = function (task) {
     var defer = window.jQuery.Deferred();
+    defer.notify('_subscriptions', arguments, false);
     hoodie.task('subscriptions').start(task)
       .then(defer.resolve)
       .fail(defer.reject);
@@ -51,6 +53,7 @@ Hoodie.extend(function (hoodie) {
 
     follow: function (userName) {
       var defer = window.jQuery.Deferred();
+      defer.notify('follow', arguments, false);
       var task = {
         userName: userName
       };
@@ -62,6 +65,7 @@ Hoodie.extend(function (hoodie) {
 
     verifyUser: function (userName) {
       var defer = window.jQuery.Deferred();
+      defer.notify('verifyUser', arguments, false);
       var task;
       if (!userName) {
         task = {
@@ -105,6 +109,7 @@ Hoodie.extend(function (hoodie) {
 
     post: function (postObject, userName) {
       var defer = window.jQuery.Deferred();
+      defer.notify('post', arguments, false);
       hoodie.socialmedia.verifyUser(userName)
         .fail(defer.reject)
         .then(function (task) {
@@ -118,6 +123,7 @@ Hoodie.extend(function (hoodie) {
 
     updatePost: function (postObject, userName) {
       var defer = window.jQuery.Deferred();
+      defer.notify('updatePost', arguments, false);
       hoodie.socialmedia.verifyUser(userName)
         .fail(defer.reject)
         .then(function (task) {
@@ -131,6 +137,7 @@ Hoodie.extend(function (hoodie) {
 
     deletePost: function (postObject, userName) {
       var defer = window.jQuery.Deferred();
+      defer.notify('deletePost', arguments, false);
       hoodie.socialmedia.verifyUser(userName)
         .fail(defer.reject)
         .then(function (task) {
@@ -144,6 +151,7 @@ Hoodie.extend(function (hoodie) {
 
     feed: function (userName) {
       var defer = window.jQuery.Deferred();
+      defer.notify('', arguments, false);
       hoodie.socialmedia.verifyUser(userName)
         .fail(defer.reject)
         .then(function (task) {
@@ -156,6 +164,7 @@ Hoodie.extend(function (hoodie) {
 
     comment: function (postObjectPost, postObjectComment) {
       var defer = window.jQuery.Deferred();
+      defer.notify('comment', arguments, false);
       hoodie.task('comment').start({postObject: postObjectPost, commentObject: postObjectComment})
         .then(defer.resolve)
         .fail(defer.reject);
@@ -163,6 +172,7 @@ Hoodie.extend(function (hoodie) {
     },
     updateComment: function (postObjectPost, postObjectComment) {
       var defer = window.jQuery.Deferred();
+      defer.notify('', arguments, false);
       hoodie.task('updatecomment').start({postObject: postObjectPost, commentObject: postObjectComment})
         .then(defer.resolve)
         .fail(defer.reject);
@@ -170,6 +180,7 @@ Hoodie.extend(function (hoodie) {
     },
     deleteComment: function (postObjectPost, postObjectComment) {
       var defer = window.jQuery.Deferred();
+      defer.notify('', arguments, false);
       hoodie.task('deletecomment').start({postObject: postObjectPost, commentObject: postObjectComment})
         .then(defer.resolve)
         .fail(defer.reject);
@@ -177,6 +188,7 @@ Hoodie.extend(function (hoodie) {
     },
     count: function (postObjectPost, countType) {
       var defer = window.jQuery.Deferred();
+      defer.notify('count', arguments, false);
       hoodie.task('count').start({postObject: postObjectPost, countType: countType})
         .then(defer.resolve)
         .fail(defer.reject);
@@ -184,6 +196,7 @@ Hoodie.extend(function (hoodie) {
     },
     uncount: function (postObjectPost, countType) {
       var defer = window.jQuery.Deferred();
+      defer.notify('uncount', arguments, false);
       hoodie.task('uncount').start({postObject: postObjectPost, countType: countType})
         .then(defer.resolve)
         .fail(defer.reject);
@@ -191,6 +204,7 @@ Hoodie.extend(function (hoodie) {
     },
     getPost: function (postObjectPost) {
       var defer = window.jQuery.Deferred();
+      defer.notify('getPost', arguments, false);
       hoodie.task('getpost').start({postObject: postObjectPost})
         .then(defer.resolve)
         .fail(defer.reject);
@@ -198,6 +212,7 @@ Hoodie.extend(function (hoodie) {
     },
     getProfile: function (userName) {
       var defer = window.jQuery.Deferred();
+      defer.notify('getProfile', arguments, false);
       hoodie.socialmedia.verifyUser(userName)
         .fail(defer.reject)
         .then(function (task) {
@@ -209,6 +224,7 @@ Hoodie.extend(function (hoodie) {
     },
     getProfileById: function (userId) {
       var defer = window.jQuery.Deferred();
+      defer.notify('getProfileById', arguments, false);
       hoodie.task('getprofile').start({userId: userId})
         .then(defer.resolve)
         .fail(defer.reject);
@@ -216,6 +232,7 @@ Hoodie.extend(function (hoodie) {
     },
     updateProfile: function (profileObject) {
       var defer = window.jQuery.Deferred();
+      defer.notify('updateProfile', arguments, false);
       hoodie.task('updateprofile').start({profileObject: profileObject})
         .then(defer.resolve)
         .fail(defer.reject);
@@ -223,6 +240,7 @@ Hoodie.extend(function (hoodie) {
     },
     share: function (postObjectPost) {
       var defer = window.jQuery.Deferred();
+      defer.notify('share', arguments, false);
       hoodie.task('share').start({postObject: postObjectPost})
         .then(defer.resolve)
         .fail(defer.reject);
@@ -235,6 +253,7 @@ Hoodie.extend(function (hoodie) {
     },
     requestFriend: function (userName) {
       var defer = window.jQuery.Deferred();
+      defer.notify('requestFriend', arguments, false);
       hoodie.socialmedia.verifyUser(userName)
         .fail(defer.reject)
         .then(function (task) {
@@ -249,4 +268,49 @@ Hoodie.extend(function (hoodie) {
   hoodie.socialmedia.unlike = partialRight(hoodie.socialmedia.uncount, 'like');
   hoodie.socialmedia.abuse = partialRight(hoodie.socialmedia.count, 'abuse');
 
+  // var debugPromisseGstart = function (text) {
+  //   var defer = window.jQuery.Deferred();
+  //   (window.debug === 'socialmedia') && console.groupCollapsed(text);
+  //   defer.resolve({});
+  //   return defer.promise();
+  // };
+
+  // var debugPromisseGend = function () {
+  //   var defer = window.jQuery.Deferred();
+  //   (window.debug === 'socialmedia') && console.groupEnd();
+  //   defer.resolve({});
+  //   return defer.promise();
+  // };
+
+  function out(name, obj, task) {
+    if (window.debug === 'socialmedia') {
+      var group = (task) ? 'task: ' + task + '(' + name + ')': 'method: ' + name;
+
+      console.groupCollapsed(group);
+      if (!!obj)
+        console.table(obj);
+      console.groupEnd();
+    }
+  }
+  
+  if (window.debug === 'socialmedia') {
+    hoodie.task.on('start', function () {
+      out('start', arguments[0], arguments[0].type);
+    });
+
+    // task aborted
+    hoodie.task.on('abort', function () {
+      out('abort', arguments[0], arguments[0].type);
+    });
+
+    // task could not be completed
+    hoodie.task.on('error', function () {
+      out('error', arguments[1], arguments[1].type);
+    });
+
+    // task completed successfully
+    hoodie.task.on('success', function () {
+      out('success', arguments[0], arguments[0].type);
+    });
+  }
 });
