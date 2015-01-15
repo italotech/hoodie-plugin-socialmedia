@@ -126,5 +126,35 @@ suite('network', function () {
         done();
       });
   });
+
+  test('hommer should requestFriend Moo', function (done) {
+    hoodie.socialmedia.requestFriend('Moo')
+      .fail(function (err) {
+        done(err);
+        assert.ok(false, err.message);
+      })
+      .then(function (task) {
+        assert.ok(true, 'requestFriend with sucess');
+        done();
+      })
+      .pipe(function () {
+        signinUser('Moo', '123', function () {})        
+      })
+  });
+
+  test('Moo should have a requestFriend notification from Hommer', function (done) {
+    var eventSpy = sinon.spy()
+
+    setTimeout(function () {
+      assert(eventSpy.called, 'Event did not fire in 1000ms.');
+      assert(eventSpy.calledOnce, 'Event fired more than once');
+      done();
+    }, 3000); //timeout with an error in one second
+    
+    hoodie.socialmedia.notification.on(eventSpy);
+
+  });
+
+
 });
 

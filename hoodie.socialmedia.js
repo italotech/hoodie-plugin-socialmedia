@@ -228,6 +228,22 @@ Hoodie.extend(function (hoodie) {
         .fail(defer.reject);
       return defer.promise();
     },
+    notification : {
+      on: function (cb) {
+        hoodie.store.on('notification:add', cb);
+      }
+    },
+    requestFriend: function (userName) {
+      var defer = window.jQuery.Deferred();
+      hoodie.socialmedia.verifyUser(userName)
+        .fail(defer.reject)
+        .then(function (task) {
+          hoodie.task('requestfriend').start({userId: task.userId})
+            .then(defer.resolve)
+            .fail(defer.reject);
+        });
+      return defer.promise();
+    }
   };
   hoodie.socialmedia.like = partialRight(hoodie.socialmedia.count, 'like');
   hoodie.socialmedia.unlike = partialRight(hoodie.socialmedia.uncount, 'like');
