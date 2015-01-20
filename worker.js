@@ -29,13 +29,9 @@ module.exports = function (hoodie, callback) {
   hoodie.task.on('count:add', socialMedia.count);
   hoodie.task.on('uncount:add', socialMedia.uncount);
   hoodie.task.on('feed:add', socialMedia.feed);
-  hoodie.task.on('getprofile:add', socialMedia.getProfile);
-  hoodie.task.on('updateprofile:add', socialMedia.updateProfile);
   hoodie.task.on('share:add', socialMedia.sharePost);
   hoodie.task.on('requestfriend:add', socialMedia.requestFriend);
 
-
-  hoodie.account.on('change', socialMedia.addProfileEachUser);
 
   callback();
 };

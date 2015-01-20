@@ -74,7 +74,7 @@ suite('network', function () {
         assert.ok(false, err.message);
       })
       .then(function (task) {
-        assert.ok((task.following.length === 3) , 'following ' + task.following.length + ' with sucess');
+        assert.ok((task.socialmedia.following.length === 3) , 'following ' + task.socialmedia.following.length + ' with sucess');
         done();
       });
   });
@@ -86,7 +86,7 @@ suite('network', function () {
         assert.ok(false, err.message);
       })
       .then(function (task) {
-        assert.ok((task.followers.length === 0) , 'followers ' + task.followers.length + ' with sucess');
+        assert.ok((task.socialmedia.followers.length === 0) , 'followers ' + task.socialmedia.followers.length + ' with sucess');
         done();
       });
   });
@@ -110,7 +110,7 @@ suite('network', function () {
         assert.ok(false, err.message);
       })
       .then(function (task) {
-        assert.ok((task.subscriptions.length === 2) , 'subscriptions ' + task.subscriptions.length + ' with sucess');
+        assert.ok((task.socialmedia.following.length === 2) , 'following ' + task.socialmedia.following.length + ' with sucess');
         done();
       });
   });
@@ -122,7 +122,7 @@ suite('network', function () {
         assert.ok(false, err.message);
       })
       .then(function (task) {
-        assert.ok((task.followers.length === 1) , 'followers ' + task.followers.length + ' with sucess');
+        assert.ok((task.socialmedia.followers.length === 1) , 'followers ' + task.socialmedia.followers.length + ' with sucess');
         done();
       });
   });
@@ -138,7 +138,7 @@ suite('network', function () {
         done();
       })
       .pipe(function () {
-        signinUser('Moo', '123', function () {})        
+        signinUser('Moo', '123', function () {})
       })
   });
 
@@ -150,7 +150,7 @@ suite('network', function () {
       assert(eventSpy.calledOnce, 'Event fired more than once');
       done();
     }, 3000); //timeout with an error in one second
-    
+
     hoodie.socialmedia.notification.on(eventSpy);
 
   });

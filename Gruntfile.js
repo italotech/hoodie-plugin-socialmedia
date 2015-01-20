@@ -265,6 +265,13 @@ module.exports = function (grunt) {
     'hoodie',
     'continueOn',
   ]);
+  grunt.registerTask('test:fast', [
+    'jshint',
+    'env:test',
+    'shell:removeData',
+    'hoodie',
+    'continueOn',
+  ]);
   grunt.registerTask('test:stop', [
     'hoodie_stop',
     'shell:npmUnlink',

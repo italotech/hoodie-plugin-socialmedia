@@ -6,6 +6,7 @@
   "dependencies": {
     "async": "^0.9.0",
     "debug": "^2.1.0",
+    "hoodie-plugin-profile": "^0.1.2",
     "hoodie-plugin-pubsub": "^0.1.13",
     "hoodie-plugin-users": "^2.1.3",
     "hoodie-utils-plugins": "^0.1.4",
@@ -43,7 +44,8 @@
     "plugins": [
       "hoodie-plugin-pubsub",
       "hoodie-plugin-users",
-      "hoodie-plugin-socialmedia"
+      "hoodie-plugin-socialmedia",
+      "hoodie-plugin-profile"
     ],
     "hoodiejs": "node_modules/hoodie/src/hoodie.js"
   },
