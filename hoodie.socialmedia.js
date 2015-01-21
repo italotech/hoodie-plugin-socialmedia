@@ -105,7 +105,11 @@ Hoodie.extend(function (hoodie) {
           .fail(defer.reject);
       } else {
         hoodie.profile.getByUserName(userName)
-          .then(defer.resolve)
+          .then(function (task) {
+            defer.resolve({
+              profile: task.profile
+            });
+          })
           .fail(defer.reject);
       }
       return defer.promise();
@@ -129,7 +133,8 @@ Hoodie.extend(function (hoodie) {
       hoodie.socialmedia.verifyUser(userName)
         .fail(defer.reject)
         .then(function (task) {
-          task.postObject = postObject;
+          task.socialmedia = task.profile;
+          task.socialmedia.post = postObject;
           hoodie.task('post').start(task)
             .then(defer.resolve)
             .fail(defer.reject);
@@ -143,7 +148,8 @@ Hoodie.extend(function (hoodie) {
       hoodie.socialmedia.verifyUser(userName)
         .fail(defer.reject)
         .then(function (task) {
-          task.postObject = postObject;
+          task.socialmedia = task.profile;
+          task.socialmedia.post = postObject;
           hoodie.task('updatepost').start(task)
             .then(defer.resolve)
             .fail(defer.reject);
@@ -157,7 +163,8 @@ Hoodie.extend(function (hoodie) {
       hoodie.socialmedia.verifyUser(userName)
         .fail(defer.reject)
         .then(function (task) {
-          task.postObject = postObject;
+          task.socialmedia = task.profile;
+          task.socialmedia.post = postObject;
           hoodie.task('deletepost').start(task)
             .then(defer.resolve)
             .fail(defer.reject);
@@ -167,61 +174,97 @@ Hoodie.extend(function (hoodie) {
 
     feed: function (userName) {
       var defer = window.jQuery.Deferred();
-      defer.notify('', arguments, false);
+      defer.notify('feed', arguments, false);
       hoodie.socialmedia.verifyUser(userName)
         .fail(defer.reject)
         .then(function (task) {
-          hoodie.task('feed').start({userId: task.userId})
+          task.socialmedia = task.profile;
+          hoodie.task('feed').start(task)
             .then(defer.resolve)
             .fail(defer.reject);
         });
       return defer.promise();
     },
 
-    comment: function (postObjectPost, postObjectComment) {
+    comment: function (postObject, commentObject) {
       var defer = window.jQuery.Deferred();
       defer.notify('comment', arguments, false);
-      hoodie.task('comment').start({postObject: postObjectPost, commentObject: postObjectComment})
+      var task = {
+        socialmedia: {
+          post: postObject,
+          comment: commentObject
+        }
+      };
+      hoodie.task('comment').start(task)
         .then(defer.resolve)
         .fail(defer.reject);
       return defer.promise();
     },
-    updateComment: function (postObjectPost, postObjectComment) {
+    updateComment: function (postObject, commentObject) {
+      var defer = window.jQuery.Deferred();
+      defer.notify('updateComment', arguments, false);
+      var task = {
+        socialmedia: {
+          post: postObject,
+          comment: commentObject
+        }
+      };
+      hoodie.task('updatecomment').start(task)
+        .then(defer.resolve)
+        .fail(defer.reject);
+      return defer.promise();
+    },
+    deleteComment: function (postObject, commentObject) {
       var defer = window.jQuery.Deferred();
       defer.notify('', arguments, false);
-      hoodie.task('updatecomment').start({postObject: postObjectPost, commentObject: postObjectComment})
+      var task = {
+        socialmedia: {
+          post: postObject,
+          comment: commentObject
+        }
+      };
+      hoodie.task('deletecomment').start(task)
         .then(defer.resolve)
         .fail(defer.reject);
       return defer.promise();
     },
-    deleteComment: function (postObjectPost, postObjectComment) {
-      var defer = window.jQuery.Deferred();
-      defer.notify('', arguments, false);
-      hoodie.task('deletecomment').start({postObject: postObjectPost, commentObject: postObjectComment})
-        .then(defer.resolve)
-        .fail(defer.reject);
-      return defer.promise();
-    },
-    count: function (postObjectPost, countType) {
+    count: function (postObject, commentObject) {
       var defer = window.jQuery.Deferred();
       defer.notify('count', arguments, false);
-      hoodie.task('count').start({postObject: postObjectPost, countType: countType})
+      var task = {
+        socialmedia: {
+          post: postObject,
+          comment: commentObject
+        }
+      };
+      hoodie.task('count').start(task)
         .then(defer.resolve)
         .fail(defer.reject);
       return defer.promise();
     },
-    uncount: function (postObjectPost, countType) {
+    uncount: function (postObject, commentObject) {
       var defer = window.jQuery.Deferred();
       defer.notify('uncount', arguments, false);
-      hoodie.task('uncount').start({postObject: postObjectPost, countType: countType})
+      var task = {
+        socialmedia: {
+          post: postObject,
+          comment: commentObject
+        }
+      };
+      hoodie.task('uncount').start(task)
         .then(defer.resolve)
         .fail(defer.reject);
       return defer.promise();
     },
-    getPost: function (postObjectPost) {
+    getPost: function (postObject) {
       var defer = window.jQuery.Deferred();
       defer.notify('getPost', arguments, false);
-      hoodie.task('getpost').start({postObject: postObjectPost})
+      var task = {
+        socialmedia: {
+          post: postObject
+        }
+      };
+      hoodie.task('getpost').start(task)
         .then(defer.resolve)
         .fail(defer.reject);
       return defer.promise();
@@ -254,10 +297,15 @@ Hoodie.extend(function (hoodie) {
         .fail(defer.reject);
       return defer.promise();
     },
-    share: function (postObjectPost) {
+    share: function (postObject) {
       var defer = window.jQuery.Deferred();
       defer.notify('share', arguments, false);
-      hoodie.task('share').start({postObject: postObjectPost})
+      var task = {
+        socialmedia: {
+          post: postObject
+        }
+      };
+      hoodie.task('share').start(task)
         .then(defer.resolve)
         .fail(defer.reject);
       return defer.promise();
@@ -274,7 +322,7 @@ Hoodie.extend(function (hoodie) {
         .fail(defer.reject)
         .then(function (task) {
           task.socialmedia = task.profile;
-          hoodie.task('requestfriend').start({userId: task.profile.userId})
+          hoodie.task('requestfriend').start(task)
             .then(defer.resolve)
             .fail(defer.reject);
         });

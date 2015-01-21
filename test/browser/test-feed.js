@@ -1,5 +1,5 @@
 suite('feed', function () {
-  this.timeout(15000);
+  this.timeout(50000);
 
   suiteSetup(loadUsers);
   suiteSetup(cleanAllPosts);
@@ -23,7 +23,7 @@ suite('feed', function () {
   test('hommer should post', function (done) {
     hoodie.socialmedia.post({text: 'dooh!'})
       .fail(function (err) {
-        done((err.message !== 'conflict') ? err: null);
+        done(err);
         assert.ok(false, err.message);
       })
       .then(function () {
@@ -35,8 +35,8 @@ suite('feed', function () {
   test('hommer should get post/text feed', function (done) {
     hoodie.socialmedia.feed()
       .fail(done)
-      .then(function (feed) {
-        this.hommerPost = feed.rows[0];
+      .then(function (task) {
+        this.hommerPost = task.socialmedia.feed[0];
         done();
         assert.ok(true, 'feed with success');
       }.bind(this));
@@ -121,10 +121,10 @@ suite('feed', function () {
         done(err);
         assert.ok(false, err.message);
       })
-      .then(function (feed) {
-        this.lisaPost = feed.rows[0];
+      .then(function (task) {
+        this.lisaPost = task.socialmedia.feed[0];
         done();
-        assert.ok(feed.rows.length == 1, 'feed with success');
+        assert.ok(task.socialmedia.feed.length == 1, 'feed with success');
       }.bind(this));
   });
 
@@ -139,7 +139,7 @@ suite('feed', function () {
         done();
         assert.ok(true, 'post should not edit by hommer');
       })
-      .then(function (post) {
+      .then(function () {
         done();
         assert.ok(false, 'post hould edit only by owner');
       });
@@ -165,8 +165,8 @@ suite('feed', function () {
 
     hoodie.socialmedia.comment(lisaPost, {text: 'vegan means eat bacon right?!'})
       .fail(done)
-      .then(function (post) {
-        this.hommerComment = post.commentObject;
+      .then(function (task) {
+        this.hommerComment = task.socialmedia.comment;
         assert.ok(true, 'comment with success');
         done();
       }.bind(this));
@@ -177,8 +177,8 @@ suite('feed', function () {
     signinUser('Lisa', '123', function () {
       hoodie.socialmedia.comment(lisaPost, {text: 'no daddy bacon is an animal!'})
         .fail(done)
-        .then(function (post) {
-          this.lisaComment = post.commentObject;
+        .then(function (task) {
+          this.lisaComment = task.socialmedia.comment;
           assert.ok(true, 'comment with success');
           done();
         }.bind(this));
@@ -190,7 +190,7 @@ suite('feed', function () {
     signinUser('Bart', '123', function () {
       hoodie.socialmedia.comment(lisaPost, {text: 'bacon is not animal, right hommer?'})
       .fail(done)
-      .then(function (post) {
+      .then(function () {
         assert.ok(true, 'comment with success');
         done();
       });
@@ -202,7 +202,7 @@ suite('feed', function () {
     signinUser('Hommer', '123', function () {
       hoodie.socialmedia.comment(lisaPost, {text: 'sure bacon is happynes!'})
       .fail(done)
-      .then(function (post) {
+      .then(function () {
         assert.ok(true, 'comment with success');
         done();
       });
@@ -213,7 +213,7 @@ suite('feed', function () {
     var lisaPost = this.lisaPost;
     hoodie.socialmedia.count(lisaPost, 'like')
       .fail(done)
-      .then(function (post) {
+      .then(function () {
         assert.ok(true, 'comment with success');
         done();
       });
@@ -225,7 +225,7 @@ suite('feed', function () {
     signinUser('Lisa', '123', function () {
       hoodie.socialmedia.count(lisaPost, 'like')
       .fail(done)
-      .then(function (post) {
+      .then(function () {
         assert.ok(true, 'comment with success');
         done();
       });
@@ -238,7 +238,7 @@ suite('feed', function () {
     signinUser('Bart', '123', function () {
       hoodie.socialmedia.count(lisaPost, 'like')
       .fail(done)
-      .then(function (post) {
+      .then(function () {
         assert.ok(true, 'comment with success');
         done();
       });
@@ -251,7 +251,7 @@ suite('feed', function () {
     signinUser('Hommer', '123', function () {
       hoodie.socialmedia.uncount(lisaPost, 'like')
       .fail(done)
-      .then(function (post) {
+      .then(function () {
         assert.ok(true, 'comment with success');
         done();
       });
@@ -263,7 +263,7 @@ suite('feed', function () {
     signinUser('Cat', '123', function () {
       hoodie.socialmedia.like(lisaPost)
       .fail(done)
-      .then(function (post) {
+      .then(function () {
         assert.ok(true, 'comment with success');
         done();
       });
@@ -275,7 +275,7 @@ suite('feed', function () {
     signinUser('Dog', '123', function () {
       hoodie.socialmedia.like(lisaPost)
       .fail(done)
-      .then(function (post) {
+      .then(function () {
         assert.ok(true, 'comment with success');
         done();
       });
@@ -287,7 +287,7 @@ suite('feed', function () {
     signinUser('Dog', '123', function () {
       hoodie.socialmedia.unlike(lisaPost)
       .fail(done)
-      .then(function (post) {
+      .then(function () {
         assert.ok(true, 'comment with success');
         done();
       });
@@ -299,8 +299,8 @@ suite('feed', function () {
     signinUser('Hommer', '123', function () {
       hoodie.socialmedia.getPost(lisaPost)
         .fail(done)
-        .then(function (post) {
-          assert.ok(post.postObject.countType.like.length === 3, 'comment with success');
+        .then(function (task) {
+          assert.ok(task.socialmedia.post.countType.like.length === 3, 'comment with success');
           done();
         });
     })
@@ -345,8 +345,8 @@ suite('feed', function () {
     signinUser('Hommer', '123', function () {
       hoodie.socialmedia.updateComment(lisaPost, hommerComment)
         .fail(done)
-        .then(function (post) {
-          assert.ok(post.commentObject.text === hommerComment.text, 'comment with success');
+        .then(function (task) {
+          assert.ok(task.socialmedia.comment.text === hommerComment.text, 'comment with success');
           done();
         });
     })
