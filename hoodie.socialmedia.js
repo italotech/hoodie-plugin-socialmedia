@@ -39,17 +39,25 @@ Hoodie.extend(function (hoodie) {
     return defer.promise();
   };
 
-  var _handleFollowers = function (task) {
+  var _handleAttr = function (task, attr) {
     var defer = window.jQuery.Deferred();
     var ids = pluck(pluck(task.pubsub.subscribers, 'doc'), 'userId');
     hoodie.profile.get(ids)
       .then(function (_task) {
         task.socialmedia = (!task.socialmedia) ? {} : task.socialmedia;
-        task.socialmedia.followers = pluck(_task.profile, 'doc');
+        task.socialmedia[attr] = pluck(_task.profile, 'doc');
         defer.resolve(task);
       })
       .fail(defer.reject);
     return defer.promise();
+  };
+
+  var _handleFollowers = function (task) {
+    return _handleAttr(task, 'followers');
+  };
+
+  var _handleFriends = function (task) {
+    return _handleAttr(task, 'friends');
   };
 
   function partialRight(fn /*, args...*/) {
@@ -65,10 +73,12 @@ Hoodie.extend(function (hoodie) {
     };
   }
 
-  function pluck(array, attr) {
-    return array.map(function (v, k) {
-      return (k === attr);
-    });
+  function pluck(originalArr, prop) {
+    var newArr = [];
+    for (var i = 0; i < originalArr.length; i++) {
+      newArr[i] = originalArr[i][prop];
+    }
+    return newArr;
   }
 
   hoodie.socialmedia = {
@@ -130,6 +140,12 @@ Hoodie.extend(function (hoodie) {
       return hoodie.socialmedia.verifyUser(userName)
         .then(_subscribers)
         .then(_handleFollowers);
+    },
+
+    friends: function (userName) {
+      return hoodie.socialmedia.verifyUser(userName)
+        .then(_subscribers)
+        .then(_handleFriends);
     },
 
     post: function (postObject, userName) {
@@ -370,12 +386,32 @@ Hoodie.extend(function (hoodie) {
         });
       return defer.promise();
     },
+    dualFollow: function (task) {
+      var defer = window.jQuery.Deferred();
+      defer.notify('dualFollow', arguments, false);
+      hoodie.task('socialmediadualfollow').start(task)
+        .then(defer.resolve)
+        .fail(defer.reject);
+      return defer.promise();
+    },
     acceptedFriend: function (userId) {
       var defer = window.jQuery.Deferred();
       defer.notify('acceptedFriend', arguments, false);
-        hoodie.socialmedia.notification.create(hoodie.id(), userId, 'acceptedFriend')
-          .then(defer.resolve)
-          .fail(defer.reject);
+      hoodie.socialmedia.notification.create(hoodie.id(), userId, 'acceptedFriend')
+        .then(function () {
+          var task = {
+            socialmedia: {
+              dualFollow: {
+                from: userId,
+                to: hoodie.id()
+              }
+            }
+          };
+          hoodie.socialmedia.dualFollow(task)
+            .then(defer.resolve)
+            .fail(defer.reject);
+        })
+        .fail(defer.reject);
 
       return defer.promise();
     },

@@ -30,6 +30,7 @@ module.exports = function (hoodie, callback) {
   hoodie.task.on('socialmediauncount:add', socialMedia.uncount);
   hoodie.task.on('socialmediafeed:add', socialMedia.feed);
   hoodie.task.on('socialmediashare:add', socialMedia.sharePost);
+  hoodie.task.on('socialmediadualfollow:add', socialMedia.dualFollow);
 
   hoodie.task.on('socialmedianotification:add', socialMedia.createNotification);
 
