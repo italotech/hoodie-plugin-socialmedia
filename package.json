@@ -1,6 +1,6 @@
 {
   "name": "hoodie-plugin-socialmedia",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Social Media Hoodie plugin",
   "main": "worker.js",
   "dependencies": {
