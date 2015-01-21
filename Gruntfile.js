@@ -255,7 +255,9 @@ module.exports = function (grunt) {
     'copy',
     'usemin'
   ]);
-
+  grunt.registerTask('lint', [
+    'jshint'
+  ]);
   grunt.registerTask('test:serve', [
     'jshint',
     'env:test',

@@ -9,7 +9,8 @@
     "before",
     "beforeEach",
     "root",
-    "window"
+    "window",
+    "debugger"
   ],
 
   "indent": 2,

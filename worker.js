@@ -16,21 +16,23 @@ var SocialMedia = require('./lib');
 module.exports = function (hoodie, callback) {
   var socialMedia = new SocialMedia(hoodie);
 
-  hoodie.task.on('lookup:add', socialMedia.lookup);
-  hoodie.task.on('follow:add', socialMedia.follow);
-  hoodie.task.on('unfollow:add', socialMedia.unfollow);
-  hoodie.task.on('post:add', socialMedia.post);
-  hoodie.task.on('getpost:add', socialMedia.getPost);
-  hoodie.task.on('updatepost:add', socialMedia.updatePost);
-  hoodie.task.on('deletepost:add', socialMedia.deletePost);
-  hoodie.task.on('comment:add', socialMedia.comment);
-  hoodie.task.on('updatecomment:add', socialMedia.updateComment);
-  hoodie.task.on('deletecomment:add', socialMedia.deleteComment);
-  hoodie.task.on('count:add', socialMedia.count);
-  hoodie.task.on('uncount:add', socialMedia.uncount);
-  hoodie.task.on('feed:add', socialMedia.feed);
-  hoodie.task.on('share:add', socialMedia.sharePost);
-  hoodie.task.on('requestfriend:add', socialMedia.requestFriend);
+  hoodie.task.on('socialmedialookup:add', socialMedia.lookup);
+  hoodie.task.on('socialmediafollow:add', socialMedia.follow);
+  hoodie.task.on('socialmediaunfollow:add', socialMedia.unfollow);
+  hoodie.task.on('socialmediapost:add', socialMedia.post);
+  hoodie.task.on('socialmediagetpost:add', socialMedia.getPost);
+  hoodie.task.on('socialmediaupdatepost:add', socialMedia.updatePost);
+  hoodie.task.on('socialmediadeletepost:add', socialMedia.deletePost);
+  hoodie.task.on('socialmediacomment:add', socialMedia.comment);
+  hoodie.task.on('socialmediaupdatecomment:add', socialMedia.updateComment);
+  hoodie.task.on('socialmediadeletecomment:add', socialMedia.deleteComment);
+  hoodie.task.on('socialmediacount:add', socialMedia.count);
+  hoodie.task.on('socialmediauncount:add', socialMedia.uncount);
+  hoodie.task.on('socialmediafeed:add', socialMedia.feed);
+  hoodie.task.on('socialmediashare:add', socialMedia.sharePost);
+
+  hoodie.task.on('socialmedianotification:add', socialMedia.createNotification);
+
 
 
   callback();

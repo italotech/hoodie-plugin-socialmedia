@@ -28,11 +28,11 @@ Hoodie.extend(function (hoodie) {
 
   var _handleFollowing = function (task) {
     var defer = window.jQuery.Deferred();
-    var ids = _.pluck(_.pluck(task.pubsub.subscriptions, 'doc'), 'userId');
+    var ids = pluck(pluck(task.pubsub.subscriptions, 'doc'), 'userId');
     hoodie.profile.get(ids)
       .then(function (_task) {
         task.socialmedia = (!task.socialmedia) ? {} : task.socialmedia;
-        task.socialmedia.following = _.pluck(_task.profile, 'doc');
+        task.socialmedia.following = pluck(_task.profile, 'doc');
         defer.resolve(task);
       })
       .fail(defer.reject);
@@ -41,11 +41,11 @@ Hoodie.extend(function (hoodie) {
 
   var _handleFollowers = function (task) {
     var defer = window.jQuery.Deferred();
-    var ids = _.pluck(_.pluck(task.pubsub.subscribers, 'doc'), 'userId');
+    var ids = pluck(pluck(task.pubsub.subscribers, 'doc'), 'userId');
     hoodie.profile.get(ids)
       .then(function (_task) {
         task.socialmedia = (!task.socialmedia) ? {} : task.socialmedia;
-        task.socialmedia.followers = _.pluck(_task.profile, 'doc');
+        task.socialmedia.followers = pluck(_task.profile, 'doc');
         defer.resolve(task);
       })
       .fail(defer.reject);
@@ -65,6 +65,12 @@ Hoodie.extend(function (hoodie) {
     };
   }
 
+  function pluck(array, attr) {
+    return array.map(function (v, k) {
+      return (k === attr);
+    });
+  }
+
   hoodie.socialmedia = {
 
     follow: function (userName) {
@@ -75,7 +81,7 @@ Hoodie.extend(function (hoodie) {
           userName: userName
         }
       };
-      hoodie.task('follow').start(task)
+      hoodie.task('socialmediafollow').start(task)
         .then(defer.resolve)
         .fail(defer.reject);
       return defer.promise();
@@ -89,7 +95,7 @@ Hoodie.extend(function (hoodie) {
           userName: userName
         }
       };
-      hoodie.task('unfollow').start(task)
+      hoodie.task('socialmediaunfollow').start(task)
         .then(defer.resolve)
         .fail(defer.reject);
       return defer.promise();
@@ -98,7 +104,6 @@ Hoodie.extend(function (hoodie) {
     verifyUser: function (userName) {
       var defer = window.jQuery.Deferred();
       defer.notify('verifyUser', arguments, false);
-      var task;
       if (!userName) {
         hoodie.profile.get()
           .then(defer.resolve)
@@ -135,7 +140,7 @@ Hoodie.extend(function (hoodie) {
         .then(function (task) {
           task.socialmedia = task.profile;
           task.socialmedia.post = postObject;
-          hoodie.task('post').start(task)
+          hoodie.task('socialmediapost').start(task)
             .then(defer.resolve)
             .fail(defer.reject);
         });
@@ -150,7 +155,7 @@ Hoodie.extend(function (hoodie) {
         .then(function (task) {
           task.socialmedia = task.profile;
           task.socialmedia.post = postObject;
-          hoodie.task('updatepost').start(task)
+          hoodie.task('socialmediaupdatepost').start(task)
             .then(defer.resolve)
             .fail(defer.reject);
         });
@@ -165,7 +170,7 @@ Hoodie.extend(function (hoodie) {
         .then(function (task) {
           task.socialmedia = task.profile;
           task.socialmedia.post = postObject;
-          hoodie.task('deletepost').start(task)
+          hoodie.task('socialmediadeletepost').start(task)
             .then(defer.resolve)
             .fail(defer.reject);
         });
@@ -179,7 +184,7 @@ Hoodie.extend(function (hoodie) {
         .fail(defer.reject)
         .then(function (task) {
           task.socialmedia = task.profile;
-          hoodie.task('feed').start(task)
+          hoodie.task('socialmediafeed').start(task)
             .then(defer.resolve)
             .fail(defer.reject);
         });
@@ -195,7 +200,7 @@ Hoodie.extend(function (hoodie) {
           comment: commentObject
         }
       };
-      hoodie.task('comment').start(task)
+      hoodie.task('socialmediacomment').start(task)
         .then(defer.resolve)
         .fail(defer.reject);
       return defer.promise();
@@ -209,7 +214,7 @@ Hoodie.extend(function (hoodie) {
           comment: commentObject
         }
       };
-      hoodie.task('updatecomment').start(task)
+      hoodie.task('socialmediaupdatecomment').start(task)
         .then(defer.resolve)
         .fail(defer.reject);
       return defer.promise();
@@ -223,7 +228,7 @@ Hoodie.extend(function (hoodie) {
           comment: commentObject
         }
       };
-      hoodie.task('deletecomment').start(task)
+      hoodie.task('socialmediadeletecomment').start(task)
         .then(defer.resolve)
         .fail(defer.reject);
       return defer.promise();
@@ -237,7 +242,7 @@ Hoodie.extend(function (hoodie) {
           countType: commentObject
         }
       };
-      hoodie.task('count').start(task)
+      hoodie.task('socialmediacount').start(task)
         .then(defer.resolve)
         .fail(defer.reject);
       return defer.promise();
@@ -251,7 +256,7 @@ Hoodie.extend(function (hoodie) {
           countType: commentObject
         }
       };
-      hoodie.task('uncount').start(task)
+      hoodie.task('socialmediauncount').start(task)
         .then(defer.resolve)
         .fail(defer.reject);
       return defer.promise();
@@ -264,7 +269,7 @@ Hoodie.extend(function (hoodie) {
           post: postObject
         }
       };
-      hoodie.task('getpost').start(task)
+      hoodie.task('socialmediagetpost').start(task)
         .then(defer.resolve)
         .fail(defer.reject);
       return defer.promise();
@@ -284,7 +289,7 @@ Hoodie.extend(function (hoodie) {
     getProfileById: function (userId) {
       var defer = window.jQuery.Deferred();
       defer.notify('getProfileById', arguments, false);
-      hoodie.task('getprofile').start({userId: userId})
+      hoodie.task('socialmediagetprofile').start({userId: userId})
         .then(defer.resolve)
         .fail(defer.reject);
       return defer.promise();
@@ -292,7 +297,7 @@ Hoodie.extend(function (hoodie) {
     updateProfile: function (profileObject) {
       var defer = window.jQuery.Deferred();
       defer.notify('updateProfile', arguments, false);
-      hoodie.task('updateprofile').start({profileObject: profileObject})
+      hoodie.task('socialmediaupdateprofile').start({profileObject: profileObject})
         .then(defer.resolve)
         .fail(defer.reject);
       return defer.promise();
@@ -305,14 +310,52 @@ Hoodie.extend(function (hoodie) {
           post: postObject
         }
       };
-      hoodie.task('share').start(task)
+      hoodie.task('socialmediashare').start(task)
         .then(defer.resolve)
         .fail(defer.reject);
       return defer.promise();
     },
     notification : {
+      create: function (from, to, notificationType) {
+        var defer = window.jQuery.Deferred();
+        defer.notify('notification:create', arguments, false);
+        var task = {
+          socialmedia: {
+            notification: {
+              from: from,
+              to: to,
+              notificationType: notificationType,
+              status: 'new'
+            }
+          }
+        };
+        hoodie.task('socialmedianotification').start(task)
+          .then(defer.resolve)
+          .fail(defer.reject);
+        return defer.promise();
+      },
       on: function (cb) {
-        hoodie.store.on('notification:add', cb);
+        hoodie.store.on('notification:add', function (doc) {
+          out('notification', doc, 'on');
+          if (doc.status === 'new') {
+            doc.status = 'read';
+            hoodie.store.update('notification', doc.id, doc)
+              .then(function () {
+                cb(null, doc);
+              })
+              .fail(cb);
+          } else {
+            cb(null, doc);
+          }
+        });
+      },
+      list: function () {
+        var defer = window.jQuery.Deferred();
+        defer.notify('notification:create', arguments, false);
+        hoodie.store.findAll('notification')
+          .then(defer.resolve)
+          .fail(defer.reject);
+        return defer.promise();
       }
     },
     requestFriend: function (userName) {
@@ -321,8 +364,28 @@ Hoodie.extend(function (hoodie) {
       hoodie.socialmedia.verifyUser(userName)
         .fail(defer.reject)
         .then(function (task) {
-          task.socialmedia = task.profile;
-          hoodie.task('requestfriend').start(task)
+          hoodie.socialmedia.notification.create(hoodie.id(), task.profile.userId, 'requestFriend')
+            .then(defer.resolve)
+            .fail(defer.reject);
+        });
+      return defer.promise();
+    },
+    acceptedFriend: function (userId) {
+      var defer = window.jQuery.Deferred();
+      defer.notify('acceptedFriend', arguments, false);
+        hoodie.socialmedia.notification.create(hoodie.id(), userId, 'acceptedFriend')
+          .then(defer.resolve)
+          .fail(defer.reject);
+
+      return defer.promise();
+    },
+    rejectedFriend: function (userName) {
+      var defer = window.jQuery.Deferred();
+      defer.notify('requestFriend', arguments, false);
+      hoodie.socialmedia.verifyUser(userName)
+        .fail(defer.reject)
+        .then(function (task) {
+          hoodie.socialmedia.notification.create(hoodie.id(), task.profile.userId, 'rejectedFriend')
             .then(defer.resolve)
             .fail(defer.reject);
         });
