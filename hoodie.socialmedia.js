@@ -234,7 +234,7 @@ Hoodie.extend(function (hoodie) {
       var task = {
         socialmedia: {
           post: postObject,
-          comment: commentObject
+          countType: commentObject
         }
       };
       hoodie.task('count').start(task)
@@ -248,7 +248,7 @@ Hoodie.extend(function (hoodie) {
       var task = {
         socialmedia: {
           post: postObject,
-          comment: commentObject
+          countType: commentObject
         }
       };
       hoodie.task('uncount').start(task)
