@@ -24,8 +24,8 @@ suite('profiles', function () {
     hoodie.socialmedia.getProfile()
       .fail(done)
       .then(function (task) {
-        this.hommerProfile = task.profileObject;
-        assert.ok(!!task.profileObject, 'getProfile with sucess');
+        this.hommerProfile = task.profile;
+        assert.ok(!!task.profile, 'getProfile with sucess');
         done();
       }.bind(this));
   });
@@ -34,7 +34,7 @@ suite('profiles', function () {
     hoodie.socialmedia.getProfile('Lisa')
       .fail(done)
       .then(function (task) {
-        assert.ok(!!task.profileObject, 'getProfile with sucess');
+        assert.ok(!!task.profile, 'getProfile with sucess');
         done();
       });
   });
@@ -49,7 +49,7 @@ suite('profiles', function () {
         hoodie.socialmedia.getProfile()
           .fail(done)
           .then(function (task) {
-            assert.ok(task.profileObject.LastName === 'Simpson', 'updateProfile with sucess');
+            assert.ok(task.profile.LastName === 'Simpson', 'updateProfile with sucess');
             done();
           })
       });

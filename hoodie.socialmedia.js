@@ -111,9 +111,9 @@ Hoodie.extend(function (hoodie) {
       return defer.promise();
     },
 
-    verifyUser: function (userName) {
+    getProfile: function (userName) {
       var defer = window.jQuery.Deferred();
-      defer.notify('verifyUser', arguments, false);
+      defer.notify('getProfile', arguments, false);
       if (!userName) {
         hoodie.profile.get()
           .then(defer.resolve)
@@ -131,19 +131,19 @@ Hoodie.extend(function (hoodie) {
     },
 
     following: function (userName) {
-      return hoodie.socialmedia.verifyUser(userName)
+      return hoodie.socialmedia.getProfile(userName)
         .then(_subscriptions)
         .then(_handleFollowing);
     },
 
     followers: function (userName) {
-      return hoodie.socialmedia.verifyUser(userName)
+      return hoodie.socialmedia.getProfile(userName)
         .then(_subscribers)
         .then(_handleFollowers);
     },
 
     friends: function (userName) {
-      return hoodie.socialmedia.verifyUser(userName)
+      return hoodie.socialmedia.getProfile(userName)
         .then(_subscribers)
         .then(_handleFriends);
     },
@@ -151,7 +151,7 @@ Hoodie.extend(function (hoodie) {
     post: function (postObject, userName) {
       var defer = window.jQuery.Deferred();
       defer.notify('post', arguments, false);
-      hoodie.socialmedia.verifyUser(userName)
+      hoodie.socialmedia.getProfile(userName)
         .fail(defer.reject)
         .then(function (task) {
           task.socialmedia = task.profile;
@@ -166,7 +166,7 @@ Hoodie.extend(function (hoodie) {
     updatePost: function (postObject, userName) {
       var defer = window.jQuery.Deferred();
       defer.notify('updatePost', arguments, false);
-      hoodie.socialmedia.verifyUser(userName)
+      hoodie.socialmedia.getProfile(userName)
         .fail(defer.reject)
         .then(function (task) {
           task.socialmedia = task.profile;
@@ -181,7 +181,7 @@ Hoodie.extend(function (hoodie) {
     deletePost: function (postObject, userName) {
       var defer = window.jQuery.Deferred();
       defer.notify('deletePost', arguments, false);
-      hoodie.socialmedia.verifyUser(userName)
+      hoodie.socialmedia.getProfile(userName)
         .fail(defer.reject)
         .then(function (task) {
           task.socialmedia = task.profile;
@@ -196,7 +196,7 @@ Hoodie.extend(function (hoodie) {
     feed: function (userName) {
       var defer = window.jQuery.Deferred();
       defer.notify('feed', arguments, false);
-      hoodie.socialmedia.verifyUser(userName)
+      hoodie.socialmedia.getProfile(userName)
         .fail(defer.reject)
         .then(function (task) {
           task.socialmedia = task.profile;
@@ -290,34 +290,6 @@ Hoodie.extend(function (hoodie) {
         .fail(defer.reject);
       return defer.promise();
     },
-    getProfile: function (userName) {
-      var defer = window.jQuery.Deferred();
-      defer.notify('getProfile', arguments, false);
-      hoodie.socialmedia.verifyUser(userName)
-        .fail(defer.reject)
-        .then(function (task) {
-          hoodie.socialmedia.getProfileById(task.userId)
-            .then(defer.resolve)
-            .fail(defer.reject);
-        });
-      return defer.promise();
-    },
-    getProfileById: function (userId) {
-      var defer = window.jQuery.Deferred();
-      defer.notify('getProfileById', arguments, false);
-      hoodie.task('socialmediagetprofile').start({userId: userId})
-        .then(defer.resolve)
-        .fail(defer.reject);
-      return defer.promise();
-    },
-    updateProfile: function (profileObject) {
-      var defer = window.jQuery.Deferred();
-      defer.notify('updateProfile', arguments, false);
-      hoodie.task('socialmediaupdateprofile').start({profileObject: profileObject})
-        .then(defer.resolve)
-        .fail(defer.reject);
-      return defer.promise();
-    },
     share: function (postObject) {
       var defer = window.jQuery.Deferred();
       defer.notify('share', arguments, false);
@@ -377,7 +349,7 @@ Hoodie.extend(function (hoodie) {
     requestFriend: function (userName) {
       var defer = window.jQuery.Deferred();
       defer.notify('requestFriend', arguments, false);
-      hoodie.socialmedia.verifyUser(userName)
+      hoodie.socialmedia.getProfile(userName)
         .fail(defer.reject)
         .then(function (task) {
           hoodie.socialmedia.notification.create(hoodie.id(), task.profile.userId, 'requestFriend')
@@ -418,7 +390,7 @@ Hoodie.extend(function (hoodie) {
     rejectedFriend: function (userName) {
       var defer = window.jQuery.Deferred();
       defer.notify('requestFriend', arguments, false);
-      hoodie.socialmedia.verifyUser(userName)
+      hoodie.socialmedia.getProfile(userName)
         .fail(defer.reject)
         .then(function (task) {
           hoodie.socialmedia.notification.create(hoodie.id(), task.profile.userId, 'rejectedFriend')
@@ -426,6 +398,9 @@ Hoodie.extend(function (hoodie) {
             .fail(defer.reject);
         });
       return defer.promise();
+    },
+    updateProfile: function (profile) {
+      return hoodie.profile.set(profile);
     }
   };
   hoodie.socialmedia.like = partialRight(hoodie.socialmedia.count, 'like');
