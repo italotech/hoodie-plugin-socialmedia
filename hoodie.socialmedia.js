@@ -400,7 +400,12 @@ Hoodie.extend(function (hoodie) {
       return defer.promise();
     },
     updateProfile: function (profile) {
-      return hoodie.profile.set(profile);
+      var defer = window.jQuery.Deferred();
+      defer.notify('updateProfile', arguments, false);
+      hoodie.profile.set(profile)
+        .then(defer.resolve)
+        .fail(defer.reject);
+      return defer.promise();
     }
   };
   hoodie.socialmedia.like = partialRight(hoodie.socialmedia.count, 'like');
