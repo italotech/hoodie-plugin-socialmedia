@@ -259,7 +259,6 @@ module.exports = function (grunt) {
     'jshint'
   ]);
   grunt.registerTask('test:serve', [
-    'jshint',
     'env:test',
     'shell:removeData',
     'shell:npmLink',
