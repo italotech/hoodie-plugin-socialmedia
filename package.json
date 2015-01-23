@@ -1,6 +1,6 @@
 {
   "name": "hoodie-plugin-socialmedia",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "Social Media Hoodie plugin",
   "main": "worker.js",
   "dependencies": {
@@ -49,6 +49,12 @@
     ],
     "hoodiejs": "node_modules/hoodie/src/hoodie.js"
   },
+  "keywords": [
+    "hoodie",
+    "socialmedia",
+    "goappes",
+    "plugin"
+  ],
   "scripts": {
     "test": "grunt test"
   },
