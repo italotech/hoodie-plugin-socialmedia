@@ -41,37 +41,29 @@ suite('notification', function () {
       .then(function (task) {
         assert.ok(true, 'requestFriend with sucess');
         done();
-      })
-      .pipe(function () {
-        signinUser('moo', '123', function () {})
-      })
-  });
-
-  test('Moo should have a requestFriend notification from Hommer', function (done) {
-
-    hoodie.socialmedia.notification.on(function (err, notification) {
-      assert.ok(notification.notificationType === 'requestFriend', 'requestFriend with sucess');
-      done();
-    });
+      });
 
   });
 
   test('moo should get friends', function (done) {
-    hoodie.socialmedia.friends()
-      .fail(function (err) {
-        done(err);
-        assert.ok(false, err.message);
-      })
-      .then(function (task) {
-        this.mooFriends = task.socialmedia.friends.length;
-        assert.ok(true , 'friends ' + task.socialmedia.friends.length + ' with sucess');
-        done();
-      }.bind(this));
+    var self = this;
+    signinUser('moo', '123', function () {
+      hoodie.socialmedia.friends()
+        .fail(function (err) {
+          done(err);
+          assert.ok(false, err.message);
+        })
+        .then(function (task) {
+          this.mooFriends = task.socialmedia.friends.length;
+          assert.ok(true , 'friends ' + task.socialmedia.friends.length + ' with sucess');
+          done();
+        }.bind(self));
+    })
   });
 
   test('Moo should list notification', function (done) {
 
-    hoodie.socialmedia.notification.list()
+    hoodie.notification.list()
       .fail(function (err) {
           done(err);
           assert.ok(false, err.message);
@@ -95,30 +87,22 @@ suite('notification', function () {
         assert.ok(true, 'acceptedFriend with sucess');
         done();
       })
-      .pipe(function () {
-        signinUser('hommer', '123', function () {})
-      })
   });
 
-  test('Hommer should have a acceptedFriend notification from Moo', function (done) {
-
-    hoodie.socialmedia.notification.on(function (err, notification) {
-      assert.ok(notification.notificationType === 'acceptedFriend', 'acceptedFriend with sucess');
-      done();
-    });
-
-  });
 
   test('hommer should had one more friend', function (done) {
-    hoodie.socialmedia.friends()
-      .fail(function (err) {
-        done(err);
-        assert.ok(false, err.message);
-      })
-      .then(function (task) {
-        assert.ok((this.hommerFriends + 1) === task.socialmedia.friends.length , 'friends ' + task.socialmedia.friends.length + ' with sucess');
-        done();
-      }.bind(this));
+    var self = this;
+    signinUser('hommer', '123', function () {
+      hoodie.socialmedia.friends()
+        .fail(function (err) {
+          done(err);
+          assert.ok(false, err.message);
+        })
+        .then(function (task) {
+          assert.ok((this.hommerFriends + 1) === task.socialmedia.friends.length , 'friends ' + task.socialmedia.friends.length + ' with sucess');
+          done();
+        }.bind(self));
+    });
   });
 
   test('moo should had one more friend', function (done) {

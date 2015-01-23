@@ -303,56 +303,14 @@ Hoodie.extend(function (hoodie) {
         .fail(defer.reject);
       return defer.promise();
     },
-    notification : {
-      create: function (from, to, notificationType) {
-        var defer = window.jQuery.Deferred();
-        defer.notify('notification:create', arguments, false);
-        var task = {
-          socialmedia: {
-            notification: {
-              from: from,
-              to: to,
-              notificationType: notificationType,
-              status: 'new'
-            }
-          }
-        };
-        hoodie.task('socialmedianotification').start(task)
-          .then(defer.resolve)
-          .fail(defer.reject);
-        return defer.promise();
-      },
-      on: function (cb) {
-        hoodie.store.on('notification:add', function (doc) {
-          out('notification', doc, 'on');
-          if (doc.status === 'new') {
-            doc.status = 'read';
-            hoodie.store.update('notification', doc.id, doc)
-              .then(function () {
-                cb(null, doc);
-              })
-              .fail(cb);
-          } else {
-            cb(null, doc);
-          }
-        });
-      },
-      list: function () {
-        var defer = window.jQuery.Deferred();
-        defer.notify('notification:create', arguments, false);
-        hoodie.store.findAll('notification')
-          .then(defer.resolve)
-          .fail(defer.reject);
-        return defer.promise();
-      }
-    },
+
     requestFriend: function (userName) {
       var defer = window.jQuery.Deferred();
       defer.notify('requestFriend', arguments, false);
       hoodie.socialmedia.getProfile(userName)
         .fail(defer.reject)
         .then(function (task) {
-          hoodie.socialmedia.notification.create(hoodie.id(), task.profile.userId, 'requestFriend')
+          hoodie.notification.create(hoodie.id(), task.profile.userId, 'requestFriend')
             .then(defer.resolve)
             .fail(defer.reject);
         });
@@ -369,7 +327,7 @@ Hoodie.extend(function (hoodie) {
     acceptedFriend: function (userId) {
       var defer = window.jQuery.Deferred();
       defer.notify('acceptedFriend', arguments, false);
-      hoodie.socialmedia.notification.create(hoodie.id(), userId, 'acceptedFriend')
+      hoodie.notification.create(hoodie.id(), userId, 'acceptedFriend')
         .then(function () {
           var task = {
             socialmedia: {
@@ -393,7 +351,7 @@ Hoodie.extend(function (hoodie) {
       hoodie.socialmedia.getProfile(userName)
         .fail(defer.reject)
         .then(function (task) {
-          hoodie.socialmedia.notification.create(hoodie.id(), task.profile.userId, 'rejectedFriend')
+          hoodie.notification.create(hoodie.id(), task.profile.userId, 'rejectedFriend')
             .then(defer.resolve)
             .fail(defer.reject);
         });
