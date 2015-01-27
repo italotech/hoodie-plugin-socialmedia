@@ -341,7 +341,11 @@ Hoodie.extend(function (hoodie) {
             }
           };
           hoodie.socialmedia.dualFollow(task)
-            .then(defer.resolve)
+            .then(function () {
+              hoodie.notification.desactive(userId, 'requestFriend')
+                .then(defer.resolve)
+                .fail(defer.reject);
+            })
             .fail(defer.reject);
         })
         .fail(defer.reject);
