@@ -41,7 +41,10 @@ Hoodie.extend(function (hoodie) {
 
   var _handleAttr = function (task, attr) {
     var defer = window.jQuery.Deferred();
-    var ids = pluck(pluck(task.pubsub.subscribers, 'doc'), 'userId');
+    var ids = [];
+    task.pubsub.subscribers.map(function (v) {
+      ids.push(v.doc.target.split('/').pop())
+    })
     hoodie.profile.get(ids)
       .then(function (_task) {
         task.socialmedia = (!task.socialmedia) ? {} : task.socialmedia;
