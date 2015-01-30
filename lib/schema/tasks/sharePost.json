@@ -1,0 +1,9 @@
+{
+  "socialmedia": {
+    "post": {
+      "id": {
+        "$ref": "#"
+      }
+    }
+  }
+}

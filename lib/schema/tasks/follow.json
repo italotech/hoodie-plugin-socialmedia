@@ -1,0 +1,13 @@
+{
+  "socialmedia": {
+    "type": "object",
+    "properties": {
+      "userName": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "userName"
+    ]
+  }
+}

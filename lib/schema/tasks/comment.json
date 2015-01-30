@@ -1,0 +1,12 @@
+{
+  "socialmedia": {
+    "post": {
+      "id": {
+        "type": "string"
+      }
+    },
+    "comment": {
+      "$ref": "#"
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "socialmedia": {
+    "userName": {
+      "$ref": "#"
+    },
+    "post": {
+      "$ref": "#"
+    }
+  }
+}

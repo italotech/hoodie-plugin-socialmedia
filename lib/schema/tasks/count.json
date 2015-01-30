@@ -1,0 +1,12 @@
+{
+  "socialmedia": {
+    "post": {
+      "id": {
+      "$ref": "#"
+      }
+    },
+    "countType": {
+      "$ref": "#"
+    }
+  }
+}

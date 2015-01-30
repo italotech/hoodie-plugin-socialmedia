@@ -1,0 +1,14 @@
+{
+  "socialmedia": {
+    "post": {
+      "id": {
+        "$ref": "#"
+      }
+    },
+    "comment": {
+      "id": {
+        "$ref": "#"
+      }
+    }
+  }
+}

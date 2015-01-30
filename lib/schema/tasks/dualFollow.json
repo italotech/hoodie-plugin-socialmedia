@@ -1,0 +1,12 @@
+{
+  "socialmedia": {
+    "dualFollow": {
+      "to" : {
+        "$ref": "#"
+      },
+      "from" : {
+        "$ref": "#"
+      }
+    }
+  }
+}
