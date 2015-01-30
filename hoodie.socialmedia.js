@@ -43,8 +43,8 @@ Hoodie.extend(function (hoodie) {
     var defer = window.jQuery.Deferred();
     var ids = [];
     task.pubsub.subscribers.map(function (v) {
-      ids.push(v.doc.target.split('/').pop())
-    })
+      ids.push(v.doc.target.split('/').pop());
+    });
     hoodie.profile.get(ids)
       .then(function (_task) {
         task.socialmedia = (!task.socialmedia) ? {} : task.socialmedia;
@@ -151,6 +151,25 @@ Hoodie.extend(function (hoodie) {
         .then(_handleFriends);
     },
 
+    getOwner: function () {
+      return {
+        db: 'user/' + hoodie.id(),
+        userId: hoodie.id(),
+        userName: hoodie.account.username
+      };
+    },
+
+    returnTask: function (attr, cb) {
+      return function (arg) {
+        var task = {
+          socialmedia: {
+          }
+        };
+        task.socialmedia[attr] = arg;
+        cb(task);
+      };
+    },
+
     post: function (postObject, userName) {
       var defer = window.jQuery.Deferred();
       defer.notify('post', arguments, false);
@@ -159,9 +178,16 @@ Hoodie.extend(function (hoodie) {
         .then(function (task) {
           task.socialmedia = task.profile;
           task.socialmedia.post = postObject;
-          hoodie.task('socialmediapost').start(task)
-            .then(defer.resolve)
-            .fail(defer.reject);
+          if (task.profile.userId === hoodie.id()) {
+            postObject.owner = hoodie.socialmedia.getOwner();
+            hoodie.store.add('post', postObject)
+              .then(hoodie.socialmedia.returnTask('post', defer.resolve))
+              .fail(defer.reject);
+          } else {
+            hoodie.task('socialmediapost').start(task)
+              .then(defer.resolve)
+              .fail(defer.reject);
+          }
         });
       return defer.promise();
     },
@@ -174,9 +200,15 @@ Hoodie.extend(function (hoodie) {
         .then(function (task) {
           task.socialmedia = task.profile;
           task.socialmedia.post = postObject;
-          hoodie.task('socialmediaupdatepost').start(task)
-            .then(defer.resolve)
-            .fail(defer.reject);
+          if (task.profile.userId === hoodie.id()) {
+            hoodie.store.update('post', postObject.id, postObject)
+              .then(hoodie.socialmedia.returnTask('post', defer.resolve))
+              .fail(defer.reject);
+          } else {
+            hoodie.task('socialmediaupdatepost').start(task)
+              .then(defer.resolve)
+              .fail(defer.reject);
+          }
         });
       return defer.promise();
     },
@@ -189,9 +221,21 @@ Hoodie.extend(function (hoodie) {
         .then(function (task) {
           task.socialmedia = task.profile;
           task.socialmedia.post = postObject;
-          hoodie.task('socialmediadeletepost').start(task)
-            .then(defer.resolve)
-            .fail(defer.reject);
+          if (task.profile.userId === hoodie.id()) {
+            if (!postObject) {
+              hoodie.store.removeAll('post')
+                .then(defer.resolve)
+                .fail(defer.reject);
+            } else {
+              hoodie.store.remove('post', postObject.id)
+                .then(defer.resolve)
+                .fail(defer.reject);
+            }
+          } else {
+            hoodie.task('socialmediadeletepost').start(task)
+              .then(defer.resolve)
+              .fail(defer.reject);
+          }
         });
       return defer.promise();
     },
@@ -203,9 +247,15 @@ Hoodie.extend(function (hoodie) {
         .fail(defer.reject)
         .then(function (task) {
           task.socialmedia = task.profile;
-          hoodie.task('socialmediafeed').start(task)
-            .then(defer.resolve)
-            .fail(defer.reject);
+          if (task.profile.userId === hoodie.id()) {
+            hoodie.store.findAll('post')
+              .then(hoodie.socialmedia.returnTask('feed', defer.resolve))
+              .fail(defer.reject);
+          } else {
+            hoodie.task('socialmediafeed').start(task)
+              .then(defer.resolve)
+              .fail(defer.reject);
+          }
         });
       return defer.promise();
     },
@@ -219,9 +269,18 @@ Hoodie.extend(function (hoodie) {
           comment: commentObject
         }
       };
-      hoodie.task('socialmediacomment').start(task)
-        .then(defer.resolve)
-        .fail(defer.reject);
+      hoodie.store.find('post', postObject.id)
+        .then(function (post) {
+          post.comment.push(comment);
+          hoodie.socialmedia.updatePost(post)
+            .then(defer.resolve)
+            .fail(defer.reject);
+        })
+        .fail(function () {
+          hoodie.task('socialmediacomment').start(task)
+            .then(defer.resolve)
+            .fail(defer.reject);
+        });
       return defer.promise();
     },
     updateComment: function (postObject, commentObject) {
