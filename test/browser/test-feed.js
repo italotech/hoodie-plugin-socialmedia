@@ -1,7 +1,6 @@
 suite('feed', function () {
   this.timeout(50000);
 
-  suiteSetup(loadUsers);
   suiteSetup(cleanAllPosts);
 
   test('signIn hommer', function (done) {
@@ -116,7 +115,7 @@ suite('feed', function () {
   });
 
   test('hommer should get lisa feed', function (done) {
-    hoodie.socialmedia.feed('Lisa')
+    hoodie.socialmedia.feed(_.find(window.fixtures.users, { username: 'Lisa' }).hoodieId)
       .fail(function (err) {
         done(err);
         assert.ok(false, err.message);

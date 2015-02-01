@@ -16,9 +16,6 @@ var SocialMedia = require('./lib');
 module.exports = function (hoodie, callback) {
   var socialMedia = new SocialMedia(hoodie);
 
-  hoodie.task.on('socialmedialookup:add', socialMedia.lookup);
-  hoodie.task.on('socialmediafollow:add', socialMedia.follow);
-  hoodie.task.on('socialmediaunfollow:add', socialMedia.unfollow);
   hoodie.task.on('socialmediapost:add', socialMedia.post);
   hoodie.task.on('socialmediagetpost:add', socialMedia.getPost);
   hoodie.task.on('socialmediaupdatepost:add', socialMedia.updatePost);
@@ -30,7 +27,6 @@ module.exports = function (hoodie, callback) {
   hoodie.task.on('socialmediauncount:add', socialMedia.uncount);
   hoodie.task.on('socialmediafeed:add', socialMedia.feed);
   hoodie.task.on('socialmediashare:add', socialMedia.sharePost);
-  hoodie.task.on('socialmediadualfollow:add', socialMedia.dualFollow);
 
   callback();
 };

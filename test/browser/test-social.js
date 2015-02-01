@@ -1,7 +1,6 @@
 suite('network', function () {
   this.timeout(15000);
 
-  suiteSetup(loadUsers);
 
   test('signIn hommer', function (done) {
     hoodie.account.signIn('Hommer', '123')
@@ -20,7 +19,7 @@ suite('network', function () {
   });
 
   test('hommer should subscribe bart posts', function (done) {
-    hoodie.socialmedia.follow('Bart')
+    hoodie.socialmedia.follow(_.find(window.fixtures.users, { username: 'Bart' }).hoodieId)
       .fail(function (err) {
         done((err.message !=='You already subscribed.') ? err: null);
         assert.ok(false, err.message);
@@ -32,7 +31,7 @@ suite('network', function () {
   });
 
   test('hommer should not subscribe bart posts', function (done) {
-    hoodie.socialmedia.follow('Bart')
+    hoodie.socialmedia.follow(_.find(window.fixtures.users, { username: 'Bart' }).hoodieId)
       .fail(function (err) {
         done();
         assert.ok((err.message ==='You already subscribed.'), err.message);
@@ -44,7 +43,7 @@ suite('network', function () {
   });
 
   test('hommer should subscribe marge posts', function (done) {
-    hoodie.socialmedia.follow('Margie')
+    hoodie.socialmedia.follow(_.find(window.fixtures.users, { username: 'Margie' }).hoodieId)
       .fail(function (err) {
         done((err.message !=='You already subscribed.')? err: null);
         assert.ok(false, err.message);
@@ -56,7 +55,7 @@ suite('network', function () {
   });
 
   test('hommer should subscribe lisa posts', function (done) {
-    hoodie.socialmedia.follow('Lisa')
+    hoodie.socialmedia.follow(_.find(window.fixtures.users, { username: 'Lisa' }).hoodieId)
       .fail(function (err) {
         done((err.message !=='You already subscribed.')? err: null);
         assert.ok(false, err.message);
@@ -92,7 +91,7 @@ suite('network', function () {
   });
 
   test('hommer should unsubscribe bart posts', function (done) {
-    hoodie.socialmedia.unfollow('Bart')
+    hoodie.socialmedia.unfollow(_.find(window.fixtures.users, { username: 'Bart' }).hoodieId)
       .fail(function (err) {
         done(err);
         assert.ok(false, err.message);
@@ -116,7 +115,7 @@ suite('network', function () {
   });
 
   test('lisa should show 1 followers', function (done) {
-    hoodie.socialmedia.followers('Lisa')
+    hoodie.socialmedia.followers(_.find(window.fixtures.users, { username: 'Lisa' }).hoodieId)
       .fail(function (err) {
         done(err);
         assert.ok(false, err.message);

@@ -1,8 +1,6 @@
 suite('profiles', function () {
   this.timeout(15000);
 
-  suiteSetup(loadUsers);
-
 
   test('signIn hommer', function (done) {
     hoodie.account.signIn('Hommer', '123')
@@ -31,7 +29,7 @@ suite('profiles', function () {
   });
 
   test('hommer should getProfile from Lisa', function (done) {
-    hoodie.socialmedia.getProfile('Lisa')
+    hoodie.socialmedia.getProfile(_.find(window.fixtures.users, { username: 'Lisa' }).hoodieId)
       .fail(done)
       .then(function (task) {
         assert.ok(!!task.profile, 'getProfile with sucess');

@@ -9,18 +9,21 @@ var removeUsers = function (u, done) {
     .fail(function () {
       done();
     })
+  hoodie.remote.push();
 }
 
 var addUser = function (u, done) {
   hoodie.account.signUp(u.username, u.password)
     .always(function () {
-      // signOut current user
+      u.hoodieId = hoodie.id();
       localStorage.clear();
       hoodie.account.signOut()
         .always(function () {
           done();
         });
+      hoodie.remote.push();
     });
+  hoodie.remote.push();
 };
 
 var loadUsers = function (done) {
@@ -34,6 +37,7 @@ var loadUsers = function (done) {
         async.apply(async.eachSeries, users, addUser),
       ], done)
     });
+  hoodie.remote.push();
 };
 
 var signinUser = function (user, pass, done) {

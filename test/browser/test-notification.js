@@ -1,7 +1,6 @@
 suite('notification', function () {
   this.timeout(15000);
 
-  suiteSetup(loadUsers);
 
   test('signIn hommer', function (done) {
     hoodie.account.signIn('Hommer', '123')
@@ -33,7 +32,7 @@ suite('notification', function () {
   });
 
   test('hommer should requestFriend Moo', function (done) {
-    hoodie.socialmedia.requestFriend('Moo')
+    hoodie.socialmedia.requestFriend(_.find(window.fixtures.users, { username: 'Moo' }).hoodieId)
       .fail(function (err) {
         done(err);
         assert.ok(false, err.message);

@@ -8,19 +8,19 @@
 Hoodie.extend(function (hoodie) {
   'use strict';
 
-  var _subscribers = function (task) {
+  var _subscribers = function (userId) {
     var defer = window.jQuery.Deferred();
     defer.notify('_subscribers', arguments, false);
-    hoodie.pubsub.subscribers(task.profile.userId)
+    hoodie.pubsub.subscribers(userId)
       .then(defer.resolve)
       .fail(defer.reject);
     return defer.promise();
   };
 
-  var _subscriptions = function (task) {
+  var _subscriptions = function (userId) {
     var defer = window.jQuery.Deferred();
     defer.notify('_subscriptions', arguments, false);
-    hoodie.pubsub.subscriptions(task.profile.userId)
+    hoodie.pubsub.subscriptions(userId)
       .then(defer.resolve)
       .fail(defer.reject);
     return defer.promise();
@@ -28,7 +28,9 @@ Hoodie.extend(function (hoodie) {
 
   var _handleFollowing = function (task) {
     var defer = window.jQuery.Deferred();
-    var ids = pluck(pluck(task.pubsub.subscriptions, 'doc'), 'userId');
+    var ids = task.pubsub.subscriptions.map(function (v) {
+      return v.userId;
+    });
     hoodie.profile.get(ids)
       .then(function (_task) {
         task.socialmedia = (!task.socialmedia) ? {} : task.socialmedia;
@@ -41,9 +43,8 @@ Hoodie.extend(function (hoodie) {
 
   var _handleAttr = function (task, attr) {
     var defer = window.jQuery.Deferred();
-    var ids = [];
-    task.pubsub.subscribers.map(function (v) {
-      ids.push(v.doc.target.split('/').pop());
+    var ids = task.pubsub.subscribers.map(function (v) {
+      return v.userId;
     });
     hoodie.profile.get(ids)
       .then(function (_task) {
@@ -85,77 +86,53 @@ Hoodie.extend(function (hoodie) {
   }
 
   hoodie.socialmedia = {
-
-    follow: function (userName) {
+    pubsubtypes: ['post', 'profile'],
+    follow: function (userId) {
       var defer = window.jQuery.Deferred();
       defer.notify('follow', arguments, false);
-      var task = {
-        socialmedia: {
-          userName: userName
-        }
-      };
-      hoodie.task('socialmediafollow').start(task)
+      hoodie.pubsub.subscribe(userId, hoodie.socialmedia.pubsubtypes)
         .then(defer.resolve)
         .fail(defer.reject);
       return defer.promise();
     },
 
-    unfollow: function (userName) {
+    unfollow: function (userId) {
       var defer = window.jQuery.Deferred();
       defer.notify('unfollow', arguments, false);
-      var task = {
-        socialmedia: {
-          userName: userName
-        }
-      };
-      hoodie.task('socialmediaunfollow').start(task)
+      hoodie.pubsub.unsubscribe(userId, hoodie.socialmedia.pubsubtypes)
         .then(defer.resolve)
         .fail(defer.reject);
       return defer.promise();
     },
 
-    getProfile: function (userName) {
+    getProfile: function (userId) {
       var defer = window.jQuery.Deferred();
       defer.notify('getProfile', arguments, false);
-      if (!userName) {
-        hoodie.profile.get()
-          .then(defer.resolve)
-          .fail(defer.reject);
-      } else {
-        hoodie.profile.getByUserName(userName)
-          .then(function (task) {
-            defer.resolve({
-              profile: task.profile
-            });
-          })
-          .fail(defer.reject);
-      }
+      hoodie.profile.get(userId)
+        .then(defer.resolve)
+        .fail(defer.reject);
       return defer.promise();
     },
 
-    following: function (userName) {
-      return hoodie.socialmedia.getProfile(userName)
-        .then(_subscriptions)
+    following: function (userId) {
+      return _subscriptions(userId)
         .then(_handleFollowing);
     },
 
-    followers: function (userName) {
-      return hoodie.socialmedia.getProfile(userName)
-        .then(_subscribers)
+    followers: function (userId) {
+      return _subscribers(userId)
         .then(_handleFollowers);
     },
 
-    friends: function (userName) {
-      return hoodie.socialmedia.getProfile(userName)
-        .then(_subscribers)
+    friends: function (userId) {
+      return _subscribers(userId)
         .then(_handleFriends);
     },
 
     getOwner: function () {
       return {
         db: 'user/' + hoodie.id(),
-        userId: hoodie.id(),
-        userName: hoodie.account.username
+        userId: hoodie.id()
       };
     },
 
@@ -170,93 +147,105 @@ Hoodie.extend(function (hoodie) {
       };
     },
 
-    post: function (postObject, userName) {
+    post: function (postObject, userId) {
       var defer = window.jQuery.Deferred();
       defer.notify('post', arguments, false);
-      hoodie.socialmedia.getProfile(userName)
-        .fail(defer.reject)
-        .then(function (task) {
-          task.socialmedia = task.profile;
-          task.socialmedia.post = postObject;
-          if (task.profile.userId === hoodie.id()) {
-            postObject.owner = hoodie.socialmedia.getOwner();
-            hoodie.store.add('post', postObject)
-              .then(hoodie.socialmedia.returnTask('post', defer.resolve))
-              .fail(defer.reject);
-          } else {
-            hoodie.task('socialmediapost').start(task)
-              .then(defer.resolve)
-              .fail(defer.reject);
-          }
-        });
+      userId = userId || hoodie.id();
+      var task = {
+        socialmedia: {
+          userId: userId,
+          post: postObject
+        }
+      };
+      if (userId === hoodie.id()) {
+        postObject.owner = hoodie.socialmedia.getOwner();
+        hoodie.store.add('post', postObject)
+          .then(hoodie.socialmedia.returnTask('post', defer.resolve))
+          .fail(defer.reject);
+      } else {
+        hoodie.task('socialmediapost').start(task)
+          .then(defer.resolve)
+          .fail(defer.reject);
+        hoodie.remote.push();
+      }
+
       return defer.promise();
     },
 
-    updatePost: function (postObject, userName) {
+    updatePost: function (postObject, userId) {
       var defer = window.jQuery.Deferred();
       defer.notify('updatePost', arguments, false);
-      hoodie.socialmedia.getProfile(userName)
-        .fail(defer.reject)
-        .then(function (task) {
-          task.socialmedia = task.profile;
-          task.socialmedia.post = postObject;
-          if (task.profile.userId === hoodie.id()) {
-            hoodie.store.update('post', postObject.id, postObject)
-              .then(hoodie.socialmedia.returnTask('post', defer.resolve))
-              .fail(defer.reject);
-          } else {
-            hoodie.task('socialmediaupdatepost').start(task)
-              .then(defer.resolve)
-              .fail(defer.reject);
-          }
-        });
+      userId = userId || hoodie.id();
+      var task = {
+        socialmedia: {
+          userId: userId,
+        }
+      };
+      task.socialmedia.post = postObject;
+      if (userId === hoodie.id()) {
+        hoodie.store.update('post', postObject.id, postObject)
+          .then(hoodie.socialmedia.returnTask('post', defer.resolve))
+          .fail(defer.reject);
+      } else {
+        hoodie.task('socialmediaupdatepost').start(task)
+          .then(defer.resolve)
+          .fail(defer.reject);
+        hoodie.remote.push();
+      }
+
       return defer.promise();
     },
 
-    deletePost: function (postObject, userName) {
+    deletePost: function (postObject, userId) {
       var defer = window.jQuery.Deferred();
       defer.notify('deletePost', arguments, false);
-      hoodie.socialmedia.getProfile(userName)
-        .fail(defer.reject)
-        .then(function (task) {
-          task.socialmedia = task.profile;
-          task.socialmedia.post = postObject;
-          if (task.profile.userId === hoodie.id()) {
-            if (!postObject) {
-              hoodie.store.removeAll('post')
-                .then(defer.resolve)
-                .fail(defer.reject);
-            } else {
-              hoodie.store.remove('post', postObject.id)
-                .then(defer.resolve)
-                .fail(defer.reject);
-            }
-          } else {
-            hoodie.task('socialmediadeletepost').start(task)
-              .then(defer.resolve)
-              .fail(defer.reject);
-          }
-        });
+      userId = userId || hoodie.id();
+      var task = {
+        socialmedia: {
+          userId: userId,
+        }
+      };
+      task.socialmedia.post = postObject;
+      if (userId === hoodie.id()) {
+        if (!postObject) {
+          hoodie.store.removeAll('post')
+            .then(defer.resolve)
+            .fail(defer.reject);
+        } else {
+          hoodie.store.remove('post', postObject.id)
+            .then(defer.resolve)
+            .fail(defer.reject);
+        }
+      } else {
+        hoodie.task('socialmediadeletepost').start(task)
+          .then(defer.resolve)
+          .fail(defer.reject);
+        hoodie.remote.push();
+      }
+
       return defer.promise();
     },
 
-    feed: function (userName) {
+    feed: function (userId) {
       var defer = window.jQuery.Deferred();
       defer.notify('feed', arguments, false);
-      hoodie.socialmedia.getProfile(userName)
-        .fail(defer.reject)
-        .then(function (task) {
-          task.socialmedia = task.profile;
-          if (task.profile.userId === hoodie.id()) {
-            hoodie.store.findAll('post')
-              .then(hoodie.socialmedia.returnTask('feed', defer.resolve))
-              .fail(defer.reject);
-          } else {
-            hoodie.task('socialmediafeed').start(task)
-              .then(defer.resolve)
-              .fail(defer.reject);
-          }
-        });
+      userId = userId || hoodie.id();
+      var task = {
+        socialmedia: {
+          userId: userId,
+        }
+      };
+      if (userId === hoodie.id()) {
+        hoodie.store.findAll('post')
+          .then(hoodie.socialmedia.returnTask('feed', defer.resolve))
+          .fail(defer.reject);
+      } else {
+        hoodie.task('socialmediafeed').start(task)
+          .then(defer.resolve)
+          .fail(defer.reject);
+        hoodie.remote.push();
+      }
+
       return defer.promise();
     },
 
@@ -269,18 +258,11 @@ Hoodie.extend(function (hoodie) {
           comment: commentObject
         }
       };
-      hoodie.store.find('post', postObject.id)
-        .then(function (post) {
-          post.comment.push(comment);
-          hoodie.socialmedia.updatePost(post)
-            .then(defer.resolve)
-            .fail(defer.reject);
-        })
-        .fail(function () {
-          hoodie.task('socialmediacomment').start(task)
-            .then(defer.resolve)
-            .fail(defer.reject);
-        });
+
+      hoodie.task('socialmediacomment').start(task)
+        .then(defer.resolve)
+        .fail(defer.reject);
+      hoodie.remote.push();
       return defer.promise();
     },
     updateComment: function (postObject, commentObject) {
@@ -295,6 +277,7 @@ Hoodie.extend(function (hoodie) {
       hoodie.task('socialmediaupdatecomment').start(task)
         .then(defer.resolve)
         .fail(defer.reject);
+      hoodie.remote.push();
       return defer.promise();
     },
     deleteComment: function (postObject, commentObject) {
@@ -309,6 +292,7 @@ Hoodie.extend(function (hoodie) {
       hoodie.task('socialmediadeletecomment').start(task)
         .then(defer.resolve)
         .fail(defer.reject);
+      hoodie.remote.push();
       return defer.promise();
     },
     count: function (postObject, commentObject) {
@@ -323,6 +307,7 @@ Hoodie.extend(function (hoodie) {
       hoodie.task('socialmediacount').start(task)
         .then(defer.resolve)
         .fail(defer.reject);
+      hoodie.remote.push();
       return defer.promise();
     },
     uncount: function (postObject, commentObject) {
@@ -337,6 +322,7 @@ Hoodie.extend(function (hoodie) {
       hoodie.task('socialmediauncount').start(task)
         .then(defer.resolve)
         .fail(defer.reject);
+      hoodie.remote.push();
       return defer.promise();
     },
     getPost: function (postObject) {
@@ -350,6 +336,7 @@ Hoodie.extend(function (hoodie) {
       hoodie.task('socialmediagetpost').start(task)
         .then(defer.resolve)
         .fail(defer.reject);
+      hoodie.remote.push();
       return defer.promise();
     },
     share: function (postObject) {
@@ -363,43 +350,36 @@ Hoodie.extend(function (hoodie) {
       hoodie.task('socialmediashare').start(task)
         .then(defer.resolve)
         .fail(defer.reject);
+      hoodie.remote.push();
       return defer.promise();
     },
 
-    requestFriend: function (userName) {
+    requestFriend: function (userId) {
       var defer = window.jQuery.Deferred();
       defer.notify('requestFriend', arguments, false);
-      hoodie.socialmedia.getProfile(userName)
-        .fail(defer.reject)
-        .then(function (task) {
-          hoodie.notification.create(hoodie.id(), task.profile.userId, 'requestFriend')
-            .then(defer.resolve)
-            .fail(defer.reject);
-        });
+
+      hoodie.notification.create(hoodie.id(), userId, 'requestFriend')
+        .then(defer.resolve)
+        .fail(defer.reject);
+
       return defer.promise();
     },
-    dualFollow: function (task) {
+
+    dualFollow: function (userId) {
       var defer = window.jQuery.Deferred();
       defer.notify('dualFollow', arguments, false);
-      hoodie.task('socialmediadualfollow').start(task)
+      hoodie.pubsub.bidirectional(userId, hoodie.socialmedia.pubsubtypes)
         .then(defer.resolve)
         .fail(defer.reject);
       return defer.promise();
     },
+
     acceptedFriend: function (userId) {
       var defer = window.jQuery.Deferred();
       defer.notify('acceptedFriend', arguments, false);
       hoodie.notification.create(hoodie.id(), userId, 'acceptedFriend')
         .then(function () {
-          var task = {
-            socialmedia: {
-              dualFollow: {
-                from: userId,
-                to: hoodie.id()
-              }
-            }
-          };
-          hoodie.socialmedia.dualFollow(task)
+          hoodie.socialmedia.dualFollow(userId)
             .then(function () {
               hoodie.notification.desactive(userId, 'requestFriend')
                 .then(defer.resolve)
@@ -411,18 +391,17 @@ Hoodie.extend(function (hoodie) {
 
       return defer.promise();
     },
-    rejectedFriend: function (userName) {
+    rejectedFriend: function (userId) {
       var defer = window.jQuery.Deferred();
       defer.notify('requestFriend', arguments, false);
-      hoodie.socialmedia.getProfile(userName)
-        .fail(defer.reject)
-        .then(function (task) {
-          hoodie.notification.create(hoodie.id(), task.profile.userId, 'rejectedFriend')
-            .then(defer.resolve)
-            .fail(defer.reject);
-        });
+
+      hoodie.notification.create(hoodie.id(), userId, 'rejectedFriend')
+        .then(defer.resolve)
+        .fail(defer.reject);
+
       return defer.promise();
     },
+
     updateProfile: function (profile) {
       var defer = window.jQuery.Deferred();
       defer.notify('updateProfile', arguments, false);
