@@ -34,7 +34,9 @@ Hoodie.extend(function (hoodie) {
     hoodie.profile.get(ids)
       .then(function (_task) {
         task.socialmedia = (!task.socialmedia) ? {} : task.socialmedia;
-        task.socialmedia.following = pluck(_task.profile, 'doc');
+        task.socialmedia.following = _task.profile.map(function (v) {
+          return v.doc;
+        });
         defer.resolve(task);
       })
       .fail(defer.reject);
@@ -49,7 +51,9 @@ Hoodie.extend(function (hoodie) {
     hoodie.profile.get(ids)
       .then(function (_task) {
         task.socialmedia = (!task.socialmedia) ? {} : task.socialmedia;
-        task.socialmedia[attr] = pluck(_task.profile, 'doc');
+        task.socialmedia[attr] = _task.profile.map(function (v) {
+          return v.doc;
+        });
         defer.resolve(task);
       })
       .fail(defer.reject);
@@ -75,14 +79,6 @@ Hoodie.extend(function (hoodie) {
       // specified arguments, followed by any originally-specified arguments.
       return fn.apply(this, slice.call(arguments, 0).concat(args));
     };
-  }
-
-  function pluck(originalArr, prop) {
-    var newArr = [];
-    for (var i = 0; i < originalArr.length; i++) {
-      newArr[i] = originalArr[i][prop];
-    }
-    return newArr;
   }
 
   hoodie.socialmedia = {
@@ -129,13 +125,6 @@ Hoodie.extend(function (hoodie) {
         .then(_handleFriends);
     },
 
-    getOwner: function () {
-      return {
-        db: 'user/' + hoodie.id(),
-        userId: hoodie.id()
-      };
-    },
-
     returnTask: function (attr, cb) {
       return function (arg) {
         var task = {
@@ -151,6 +140,7 @@ Hoodie.extend(function (hoodie) {
       var defer = window.jQuery.Deferred();
       defer.notify('post', arguments, false);
       userId = userId || hoodie.id();
+      postObject.userId = userId;
       var task = {
         socialmedia: {
           userId: userId,
@@ -158,7 +148,6 @@ Hoodie.extend(function (hoodie) {
         }
       };
       if (userId === hoodie.id()) {
-        postObject.owner = hoodie.socialmedia.getOwner();
         hoodie.store.add('post', postObject)
           .then(hoodie.socialmedia.returnTask('post', defer.resolve))
           .fail(defer.reject);
@@ -368,9 +357,11 @@ Hoodie.extend(function (hoodie) {
     dualFollow: function (userId) {
       var defer = window.jQuery.Deferred();
       defer.notify('dualFollow', arguments, false);
-      hoodie.pubsub.bidirectional(userId, hoodie.socialmedia.pubsubtypes, true)
+
+      hoodie.pubsub.bidirectional(userId, hoodie.socialmedia.pubsubtypes)
         .then(defer.resolve)
         .fail(defer.reject);
+
       return defer.promise();
     },
 
