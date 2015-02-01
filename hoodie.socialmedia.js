@@ -11,7 +11,7 @@ Hoodie.extend(function (hoodie) {
   var _subscribers = function (userId) {
     var defer = window.jQuery.Deferred();
     defer.notify('_subscribers', arguments, false);
-    hoodie.pubsub.subscribers(userId)
+    hoodie.pubsub.subscribersByType(hoodie.socialmedia.pubsubtypes, userId)
       .then(defer.resolve)
       .fail(defer.reject);
     return defer.promise();
@@ -20,7 +20,7 @@ Hoodie.extend(function (hoodie) {
   var _subscriptions = function (userId) {
     var defer = window.jQuery.Deferred();
     defer.notify('_subscriptions', arguments, false);
-    hoodie.pubsub.subscriptions(userId)
+    hoodie.pubsub.subscriptionsByType(hoodie.socialmedia.pubsubtypes, userId)
       .then(defer.resolve)
       .fail(defer.reject);
     return defer.promise();
@@ -368,7 +368,7 @@ Hoodie.extend(function (hoodie) {
     dualFollow: function (userId) {
       var defer = window.jQuery.Deferred();
       defer.notify('dualFollow', arguments, false);
-      hoodie.pubsub.bidirectional(userId, hoodie.socialmedia.pubsubtypes)
+      hoodie.pubsub.bidirectional(userId, hoodie.socialmedia.pubsubtypes, true)
         .then(defer.resolve)
         .fail(defer.reject);
       return defer.promise();
