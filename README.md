@@ -29,27 +29,27 @@ API:
 // the documentation still wip but PR are wellcome
 // the test/bowser folder has tests any one can understend lookin on that
 
-    hoodie.socialmedia.follow: function (userId) {
+    hoodie.socialmedia.follow: function (hoodieId) {
       return hoodie.socialmedia.follow;
     }
 
-    hoodie.socialmedia.unfollow: function (userId) {
+    hoodie.socialmedia.unfollow: function (hoodieId) {
       return hoodie.socialmedia.unfollow;
     }
 
-    hoodie.socialmedia.getProfile: function (userId) {
+    hoodie.socialmedia.getProfile: function (hoodieId) {
       return hoodie.socialmedia.getProfile;
     }
 
-    hoodie.socialmedia.following: function (userId) {
+    hoodie.socialmedia.following: function (hoodieId) {
       return hoodie.socialmedia.following;
     }
 
-    hoodie.socialmedia.followers: function (userId) {
+    hoodie.socialmedia.followers: function (hoodieId) {
       return hoodie.socialmedia.followers;
     }
 
-    hoodie.socialmedia.friends: function (userId) {
+    hoodie.socialmedia.friends: function (hoodieId) {
       return hoodie.socialmedia.friends;
     }
 
@@ -57,19 +57,19 @@ API:
       return hoodie.socialmedia.returnTask;
     }
 
-    hoodie.socialmedia.post: function (postObject, userId) {
+    hoodie.socialmedia.post: function (postObject, hoodieId) {
       return hoodie.socialmedia.post;
     }
 
-    hoodie.socialmedia.updatePost: function (postObject, userId) {
+    hoodie.socialmedia.updatePost: function (postObject, hoodieId) {
       return hoodie.socialmedia.updatePost;
     }
 
-    hoodie.socialmedia.deletePost: function (postObject, userId) {
+    hoodie.socialmedia.deletePost: function (postObject, hoodieId) {
       return hoodie.socialmedia.deletePost;
     }
 
-    hoodie.socialmedia.feed: function (userId) {
+    hoodie.socialmedia.feed: function (hoodieId) {
       return hoodie.socialmedia.feed;
     }
 
@@ -101,19 +101,19 @@ API:
       return hoodie.socialmedia.share;
     }
 
-    hoodie.socialmedia.requestFriend: function (userId) {
+    hoodie.socialmedia.requestFriend: function (hoodieId) {
       return hoodie.socialmedia.requestFriend;
     }
 
-    hoodie.socialmedia.dualFollow: function (userId) {
+    hoodie.socialmedia.dualFollow: function (hoodieId) {
       return hoodie.socialmedia.dualFollow;
     }
 
-    hoodie.socialmedia.acceptedFriend: function (userId) {
+    hoodie.socialmedia.acceptedFriend: function (hoodieId) {
       return hoodie.socialmedia.acceptedFriend;
     }
 
-    hoodie.socialmedia.rejectedFriend: function (userId) {
+    hoodie.socialmedia.rejectedFriend: function (hoodieId) {
       return hoodie.socialmedia.rejectedFriend;
     }
 
