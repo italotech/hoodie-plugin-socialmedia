@@ -1,5 +1,5 @@
 suite('loadUsers', function () {
-  this.timeout(15000);
+  this.timeout(35000);
 
   suiteSetup(loadUsers);
 

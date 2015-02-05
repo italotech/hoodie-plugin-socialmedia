@@ -12,16 +12,43 @@ var removeUsers = function (u, done) {
   hoodie.remote.push();
 }
 
+
+var setNames = function (u, done) {
+}
+
 var addUser = function (u, done) {
   hoodie.account.signUp(u.username, u.password)
-    .always(function () {
+    .then(function () {
+      return hoodie.account.signIn(u.username, u.password);
+      hoodie.remote.sync();
+    })
+    .then(function () {
+      var defer = window.jQuery.Deferred();
       u.hoodieId = hoodie.id();
-      localStorage.clear();
-      hoodie.account.signOut()
-        .always(function () {
-          done();
-        });
+      setTimeout(function(){
+        hoodie.profile.get()
+          .then(defer.resolve)
+          .fail(defer.reject);
+       }, 500);
+      return defer.promise();
+    })
+    .then(function (_task) {
+      var profile = _task.profile;
+      profile.First_Name = u.fname;
+      profile.Last_Name = u.lname;
+      profile.name = u.fname + ' ' + u.lname;
+      return hoodie.profile.set(profile);
+    })
+    .then(function () {
+      //localStorage.clear();
+      return hoodie.account.signOut()
       hoodie.remote.push();
+    })
+    .then(function () {
+      done();
+    })
+    .fail(function (err) {
+      done(err);
     });
   hoodie.remote.push();
 };
