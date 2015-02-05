@@ -23,23 +23,113 @@ for cordova/phonegap users
 ```
 
 ## API (Dream Code)
--  [x] hoodie.socialmedia.follow(login)
--  [x] hoodie.socialmedia.unfollow(login)
--  [x] hoodie.socialmedia.post({text: 'text'}, /*opitional*/ {type: [mediaplugin.enum]})
--  [x] hoodie.socialmedia.getPost({id: 'postId')
--  [x] hoodie.socialmedia.updatePost({id: 'postId',text: 'text'}, /*opitional*/ {type: [mediaplugin.enum]})
--  [x] hoodie.socialmedia.deletePost({id: 'postId'}, /*opitional*/ {type: [mediaplugin.enum]})
--  [x] hoodie.socialmedia.comment(postId, {text:'text'})
--  [x] hoodie.socialmedia.updateComment({ id: 'postId'}, {id: 'commentId'})
--  [x] hoodie.socialmedia.deleteComment({ id: 'postId'}, {id: 'commentId'})
--  [x] hoodie.socialmedia.count(postId, [type.enum]) 
--  [x] hoodie.socialmedia.uncount(postId, [type.enum])
--  [x] hoodie.socialmedia.like(postId) 
--  [x] hoodie.socialmedia.unlike(postId)
--  [x] hoodie.socialmedia.feed(postId)
--  [x] hoodie.socialmedia.share(postId)
--  [x] hoodie.socialmedia.abuse(postId)
--  [x] hoodie.socialmedia.following(/*opitional*/ login)
--  [x] hoodie.socialmedia.followers(/*opitional*/ login)
--  [x] hoodie.socialmedia.getProfile(/*opitional*/ login)
--  [x] hoodie.socialmedia.updateProfile(/*opitional*/ login, profileObject)
+API:
+```js
+// all api return some objects depends on the behaviour.
+// the documentation still wip but PR are wellcome
+// the test/bowser folder has tests any one can understend lookin on that
+
+    hoodie.socialmedia.follow: function (userId) {
+      return hoodie.socialmedia.follow;
+    }
+
+    hoodie.socialmedia.unfollow: function (userId) {
+      return hoodie.socialmedia.unfollow;
+    }
+
+    hoodie.socialmedia.getProfile: function (userId) {
+      return hoodie.socialmedia.getProfile;
+    }
+
+    hoodie.socialmedia.following: function (userId) {
+      return hoodie.socialmedia.following;
+    }
+
+    hoodie.socialmedia.followers: function (userId) {
+      return hoodie.socialmedia.followers;
+    }
+
+    hoodie.socialmedia.friends: function (userId) {
+      return hoodie.socialmedia.friends;
+    }
+
+    hoodie.socialmedia.returnTask: function (attr, cb) {
+      return hoodie.socialmedia.returnTask;
+    }
+
+    hoodie.socialmedia.post: function (postObject, userId) {
+      return hoodie.socialmedia.post;
+    }
+
+    hoodie.socialmedia.updatePost: function (postObject, userId) {
+      return hoodie.socialmedia.updatePost;
+    }
+
+    hoodie.socialmedia.deletePost: function (postObject, userId) {
+      return hoodie.socialmedia.deletePost;
+    }
+
+    hoodie.socialmedia.feed: function (userId) {
+      return hoodie.socialmedia.feed;
+    }
+
+    hoodie.socialmedia.comment: function (postObject, commentObject) {
+      return hoodie.socialmedia.comment;
+    }
+
+    hoodie.socialmedia.updateComment: function (postObject, commentObject) {
+      return hoodie.socialmedia.updateComment;
+    }
+
+    hoodie.socialmedia.deleteComment: function (postObject, commentObject) {
+      return hoodie.socialmedia.deleteComment;
+    }
+
+    hoodie.socialmedia.count: function (postObject, commentObject) {
+      return hoodie.socialmedia.count;
+    }
+
+    hoodie.socialmedia.uncount: function (postObject, commentObject) {
+      return hoodie.socialmedia.uncount;
+    }
+
+    hoodie.socialmedia.getPost: function (postObject) {
+      return hoodie.socialmedia.getPost;
+    }
+
+    hoodie.socialmedia.share: function (postObject) {
+      return hoodie.socialmedia.share;
+    }
+
+    hoodie.socialmedia.requestFriend: function (userId) {
+      return hoodie.socialmedia.requestFriend;
+    }
+
+    hoodie.socialmedia.dualFollow: function (userId) {
+      return hoodie.socialmedia.dualFollow;
+    }
+
+    hoodie.socialmedia.acceptedFriend: function (userId) {
+      return hoodie.socialmedia.acceptedFriend;
+    }
+
+    hoodie.socialmedia.rejectedFriend: function (userId) {
+      return hoodie.socialmedia.rejectedFriend;
+    }
+
+    hoodie.socialmedia.updateProfile: function (profile) {
+      return hoodie.socialmedia.updateProfile;
+    }
+
+    hoodie.socialmedia.like:  function (postObject) {
+      return hoodie.socialmedia.like;
+    }
+
+    hoodie.socialmedia.unlike:  function (postObject) {
+      return hoodie.socialmedia.unlike;
+    }
+
+    hoodie.socialmedia.abuse:  function (postObject) {
+      return hoodie.socialmedia.abuse;
+    }
+```
