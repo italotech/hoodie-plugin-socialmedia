@@ -215,6 +215,70 @@ Hoodie.extend(function (hoodie) {
       return defer.promise();
     },
 
+    addProfileOnPosts: function (collection) {
+      var defer = window.jQuery.Deferred();
+      defer.notify('addProfile', arguments, false);
+
+      var ids = collection.map(function (v) {
+        return v.userId;
+      });
+
+      var uniqueArray = ids.filter(function (item, pos, self) {
+        return self.indexOf(item) === pos;
+      });
+
+      hoodie.profile.getAsObjects(uniqueArray)
+        .then(function (profiles) {
+          defer.resolve(
+            collection.map(function (v, k, a) {
+              a[k].owner = profiles[v.userId];
+              return a[k];
+            })
+          );
+        })
+        .fail(function (err) {
+          defer.reject(err);
+        });
+
+      return defer.promise();
+    },
+
+    addProfileOnComments: function (collection) {
+      var defer = window.jQuery.Deferred();
+      defer.notify('addProfile', arguments, false);
+
+      var ids = collection.map(function (v) {
+        return v.comments && v.comments.map(function (vv) {
+          return vv.owner.userId;
+        });
+      });
+
+      ids = ids.concat.apply([], ids);
+      ids.pop();
+
+      var uniqueArray = ids.filter(function (item, pos, self) {
+        return self.indexOf(item) === pos;
+      });
+
+      hoodie.profile.getAsObjects(uniqueArray)
+        .then(function (profiles) {
+          defer.resolve(
+            collection.map(function (v, k, a) {
+              a[k].comments && a[k].comments.map(function (vv, kk, aa) {
+                aa[kk].owner = profiles[vv.owner.userId];
+                return aa[kk];
+              });
+              return a[k];
+            })
+          );
+        })
+        .fail(function (err) {
+          defer.reject(err);
+        });
+
+      return defer.promise();
+    },
+
     feed: function (userId) {
       var defer = window.jQuery.Deferred();
       defer.notify('feed', arguments, false);
@@ -226,6 +290,12 @@ Hoodie.extend(function (hoodie) {
       };
       if (userId === hoodie.id()) {
         hoodie.store.findAll('post')
+          .then(function (posts) {
+            return hoodie.socialmedia.addProfileOnPosts(posts);
+          })
+          .then(function (posts) {
+            return hoodie.socialmedia.addProfileOnComments(posts);
+          })
           .then(hoodie.socialmedia.returnTask('feed', defer.resolve))
           .fail(defer.reject);
       } else {
