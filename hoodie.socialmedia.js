@@ -122,7 +122,7 @@ Hoodie.extend(function (hoodie) {
     ids = ids.concat.apply([], ids);
 
     var uniqueArray = ids.filter(function (item, pos, self) {
-      return self.indexOf(item) === pos;
+      return (self.indexOf(item) === pos && item !== undefined);
     });
 
     hoodie.profile.getAsObjects(uniqueArray)
