@@ -144,6 +144,41 @@ Hoodie.extend(function (hoodie) {
     return defer.promise();
   };
 
+  var _addProfileOnCountType = function (collection, countType) {
+    var defer = window.jQuery.Deferred();
+    defer.notify('addProfile', arguments, false);
+
+    var ids = collection.map(function (v) {
+      return v.countType && v.countType[countType] && v.countType[countType].map(function (vv) {
+        return vv.split('/').pop();
+      });
+    });
+
+    ids = ids.concat.apply([], ids);
+
+    var uniqueArray = ids.filter(function (item, pos, self) {
+      return (self.indexOf(item) === pos && item !== undefined);
+    });
+
+    hoodie.profile.getAsObjects(uniqueArray)
+      .then(function (profiles) {
+        defer.resolve(
+          collection.map(function (v, k, a) {
+            a[k].countType && a[k].countType[countType] && a[k].countType[countType].map(function (vv, kk, aa) {
+              aa[kk] = profiles[vv.split('/').pop()];
+              return aa[kk];
+            });
+            return a[k];
+          })
+        );
+      })
+      .fail(function (err) {
+        defer.reject(err);
+      });
+
+    return defer.promise();
+  };
+
   hoodie.socialmedia = {
     pubsubtypes: ['post', 'profile'],
     follow: function (userId) {
@@ -283,6 +318,9 @@ Hoodie.extend(function (hoodie) {
       _addProfileOnPosts(posts)
         .then(function (posts) {
           return _addProfileOnComments(posts);
+        })
+        .then(function (posts) {
+          return _addProfileOnCountType(posts, 'like');
         })
         .then(defer.resolve)
         .fail(defer.reject);
