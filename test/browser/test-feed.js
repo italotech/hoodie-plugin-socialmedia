@@ -128,23 +128,6 @@ suite('feed', function () {
   });
 
 
- test('hommer should not edit lisa post', function (done) {
-    var lisaPost = this.lisaPost;
-    lisaPost.title = 'Lisaaa';
-    lisaPost.text = 'vegan?? chamed!';
-
-    hoodie.socialmedia.updatePost(lisaPost)
-      .fail(function () {
-        done();
-        assert.ok(true, 'post should not edit by hommer');
-      })
-      .then(function () {
-        done();
-        assert.ok(false, 'post hould edit only by owner');
-      });
-  });
-
-
   test('hommer should not delete lisa post', function (done) {
     var lisaPost = this.lisaPost;
 
@@ -305,6 +288,19 @@ suite('feed', function () {
     })
   });
 
+
+  test('lisa should get hommer post', function (done) {
+    var lisaPost = this.lisaPost;
+    signinUser('Lisa', '123', function () {
+      hoodie.socialmedia.feed(_.find(window.fixtures.users, { username: 'Hommer' }).hoodieId)
+        .fail(done)
+        .then(function (task) {
+          assert.ok(true, 'get feed with success');
+          done();
+        });
+    })
+  });
+
   test('hommer should not update lisa comment', function (done) {
     var lisaPost = this.lisaPost;
     var lisaComment = this.lisaComment;
@@ -379,5 +375,7 @@ suite('feed', function () {
         });
     })
   });
+
+
 
 });

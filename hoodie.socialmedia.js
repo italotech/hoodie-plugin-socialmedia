@@ -356,7 +356,10 @@ Hoodie.extend(function (hoodie) {
           .fail(defer.reject);
       } else {
         hoodie.task('socialmediafeed').start(task)
-          .then(defer.resolve)
+          .then(function (task) {
+            return hoodie.socialmedia.addProfileOnPosts(task.socialmedia.feed);
+          })
+          .then(hoodie.socialmedia.returnTask('feed', defer.resolve))
           .fail(defer.reject);
         hoodie.remote.push();
       }
