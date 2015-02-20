@@ -504,6 +504,29 @@ Hoodie.extend(function (hoodie) {
       return defer.promise();
     },
 
+    pendentFriends: function () {
+      var defer = window.jQuery.Deferred();
+      hoodie.store.findAll('notification')
+        .then(function (notifications) {
+          var ids = [];
+          notifications.map(function (v) {
+            if (v.notificationType === 'requestFriend') {
+              ids.push(v.from);
+            }
+          });
+          hoodie.profile.get(ids)
+            .then(function (task) {
+              var ret = task.profile.map(function (v) {
+                return v.doc;
+              });
+              defer.resolve(ret);
+            })
+            .fail(defer.reject);
+        })
+        .fail(defer.reject);
+      return defer.promise();
+    },
+
     acceptedFriend: function (userId) {
       var defer = window.jQuery.Deferred();
       defer.notify('acceptedFriend', arguments, false);
@@ -525,7 +548,7 @@ Hoodie.extend(function (hoodie) {
       var defer = window.jQuery.Deferred();
       defer.notify('requestFriend', arguments, false);
 
-      hoodie.notification.create(hoodie.id(), userId, 'rejectedFriend')
+      hoodie.notification.desactive(userId, 'requestFriend')
         .then(defer.resolve)
         .fail(defer.reject);
 
