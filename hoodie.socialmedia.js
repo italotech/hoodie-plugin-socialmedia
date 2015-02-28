@@ -451,16 +451,19 @@ Hoodie.extend(function (hoodie) {
       hoodie.remote.push();
       return defer.promise();
     },
+    isCount: function (postObject, userId, countType) {
+      return (postObject.countType && postObject.countType[countType] && postObject.countType[countType].filter(function (v) {
+        return v && v.id === userId;
+      }).length > 0);
+    },
     count: function (postObject, countType) {
       var defer = window.jQuery.Deferred();
       defer.notify('count', arguments, false);
       hoodie.profile.get()
         .then(function (_task) {
           var countObject = {
-            owner: {
-              id: hoodie.id(),
-              name: _task.profile.name
-            }
+            id: hoodie.id(),
+            name: _task.profile.name
           };
           var task = {
             socialmedia: {
@@ -519,12 +522,7 @@ Hoodie.extend(function (hoodie) {
     getSimplePost: function (postObject) {
       var defer = window.jQuery.Deferred();
       defer.notify('getPost', arguments, false);
-      var task = {
-        socialmedia: {
-          post: postObject
-        }
-      };
-      hoodie.task('socialmediagetpost').start(task)
+      hoodie.store.find('post', postObject.id)
         .then(function (post) {
           var task = {
             socialmedia: {
@@ -634,6 +632,7 @@ Hoodie.extend(function (hoodie) {
       return defer.promise();
     }
   };
+  hoodie.socialmedia.isLike = partialRight(hoodie.socialmedia.isCount, 'like');
   hoodie.socialmedia.like = partialRight(hoodie.socialmedia.count, 'like');
   hoodie.socialmedia.unlike = partialRight(hoodie.socialmedia.uncount, 'like');
   hoodie.socialmedia.abuse = partialRight(hoodie.socialmedia.count, 'abuse');
