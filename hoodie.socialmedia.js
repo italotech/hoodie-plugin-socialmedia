@@ -582,14 +582,13 @@ Hoodie.extend(function (hoodie) {
               ids.push(v.from);
             }
           });
-          hoodie.profile.get(ids)
-            .then(function (task) {
-              var ret = task.profile.map(function (v) {
-                return v.doc;
-              });
-              defer.resolve(ret);
-            })
-            .fail(defer.reject);
+          return hoodie.profile.get(ids);
+        })
+        .then(function (task) {
+          var ret = task.profile.map(function (v) {
+            return v.doc;
+          });
+          defer.resolve(ret);
         })
         .fail(defer.reject);
       return defer.promise();
@@ -598,16 +597,17 @@ Hoodie.extend(function (hoodie) {
     acceptedFriend: function (userId) {
       var defer = window.jQuery.Deferred();
       defer.notify('acceptedFriend', arguments, false);
-      hoodie.notification.create(hoodie.id(), userId, 'acceptedFriend')
+      hoodie.socialmedia.dualFollow(userId)
         .then(function () {
-          hoodie.socialmedia.dualFollow(userId)
-            .then(function () {
-              hoodie.notification.desactive(userId, 'requestFriend')
-                .then(defer.resolve)
-                .fail(defer.reject);
-            })
-            .fail(defer.reject);
+          return hoodie.notification.create(hoodie.id(), userId, 'acceptedFriend');
         })
+        .then(function () {
+          return hoodie.notification.create(userId, hoodie.id(), 'newFriend');
+        })
+        .then(function () {
+          return hoodie.notification.desactive(userId, 'requestFriend');
+        })
+        .then(defer.resolve)
         .fail(defer.reject);
 
       return defer.promise();
