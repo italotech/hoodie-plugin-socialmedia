@@ -179,7 +179,7 @@ Hoodie.extend(function (hoodie) {
     return defer.promise();
   };
 
-  function onTrigger (action, post) {
+  function onTrigger(action, post) {
     hoodie.trigger('onpost', action, post);
   }
 
