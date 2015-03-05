@@ -398,7 +398,7 @@ Hoodie.extend(function (hoodie) {
           .fail(defer.reject);
       } else {
         hoodie.task('socialmediafeed').start(task)
-          .then(hoodie.socialmedia.returnTask('feed', defer.resolve))
+          .then(defer.resolve)
           .fail(defer.reject);
         hoodie.remote.push();
       }
