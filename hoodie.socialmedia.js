@@ -179,8 +179,18 @@ Hoodie.extend(function (hoodie) {
     return defer.promise();
   };
 
+  function onTrigger (action, post) {
+    hoodie.trigger('onpost', action, post);
+  }
+
+  hoodie.store.on('post:change', onTrigger);
+  hoodie.remote.on('post:change', onTrigger);
+
   hoodie.socialmedia = {
     pubsubtypes: ['post', 'profile'],
+    onPost: function (cb) {
+      hoodie.on('onpost', cb);
+    },
     follow: function (userId) {
       var defer = window.jQuery.Deferred();
       defer.notify('follow', arguments, false);
